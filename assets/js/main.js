@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Once deployed (see scripts/apps-script-form-handler.gs), paste the
   // Web App URL below. Until then, forms show a success message but
   // don't submit anywhere.
-  const FORM_ENDPOINT = ''; // e.g. 'https://script.google.com/macros/s/XXXXXXXX/exec'
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxKM0AsGSR7_06VDc8bgAv-JQHj12_Rnc4Il4eiU5VD6IBuyiuHukO1OznD3Q7106jZrQ/exec';
 
   document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
