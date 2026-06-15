@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Therapists — Girl Therapy</title>
+  <meta name="description" content="Girl Therapy is building a founding network of women therapists who specialize in women's mental health. Tell us about you.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <div class="container nav__inner">
+      <a href="index.html" class="nav__logo">girl<span>therapy</span></a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="index.html#problem">Why Girl Therapy</a>
+        <a href="index.html#pillars">Our Approach</a>
+        <a href="therapists.html">For Therapists</a>
+      </nav>
+
+      <a href="#interest-form" class="btn btn-primary nav__cta">Tell us about you</a>
+
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="nav__mobile">
+      <a href="index.html#problem">Why Girl Therapy</a>
+      <a href="index.html#pillars">Our Approach</a>
+      <a href="therapists.html">For Therapists</a>
+      <a href="#interest-form" class="btn btn-primary">Tell us about you</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============ HERO ============ -->
+    <section class="page-hero bg-off-white">
+      <div class="container page-hero__inner reveal">
+        <span class="eyebrow">Founding therapist network</span>
+        <h1 class="h1">You went into this work to help women heal. <span class="accent-script">So&nbsp;did&nbsp;we.</span></h1>
+        <p class="page-hero__sub body-lg">Girl Therapy is a new telehealth platform built exclusively for women — by women. We're building our founding therapist network now, and we'd love for you to be part of it.</p>
+        <div class="page-hero__actions">
+          <a href="#interest-form" class="btn btn-primary">Tell us about you</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WHY GIRL THERAPY ============ -->
+    <section class="section bg-cream">
+      <div class="container split split--reverse reveal">
+        <div>
+          <span class="eyebrow">Why Girl Therapy</span>
+          <h2>A platform that actually understands your clients — and you.</h2>
+          <p class="body-lg">You already know that women's mental health needs aren't one-size-fits-all. Relationship patterns, body image, ambition and guilt, family dynamics, identity, the whole "why am I like this" spiral — it's specific work, and it deserves a platform built around it.</p>
+          <p>Girl Therapy's clinical identity is built on three pillars: <strong>somatic, attachment-based, and IFS (Internal Family Systems)</strong> therapy — with EMDR available as a specialized offering. If that's how you already practice (or how you've been wanting to), you're exactly who we're building this for.</p>
+        </div>
+
+        <div class="callout">
+          <span class="tag tag--pink">give therapy 💛</span>
+          <h3>Your work expands access</h3>
+          <p>Every client who books with us helps fund a session for a woman who couldn't otherwise access care. As a Girl Therapy therapist, your work directly expands access to mental health care for women who need it most.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WHAT WE'RE BUILDING ============ -->
+    <section class="section bg-yellow">
+      <div class="container reveal">
+        <div class="pillars__head" style="margin-bottom: 0;">
+          <span class="eyebrow">Let's be real with you</span>
+          <h2 class="h2">We're early — and that's kind of the point.</h2>
+          <div class="problem__body body-lg" style="margin-top: var(--space-md); text-align: left;">
+            <p>Girl Therapy is currently in a private build phase — we're developing the platform, our clinical framework, and our founding therapist community before we go live to the public in 2027.</p>
+            <p>That means right now, this is a conversation, not a job posting. We want to hear what's working for you, what's frustrating about the platforms you're on now, and what you'd want a women-focused platform to do differently. Founding therapists will have a real voice in shaping how Girl Therapy works — and early access as we build toward launch.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ INTEREST FORM ============ -->
+    <section class="section bg-off-white" id="interest-form">
+      <div class="container">
+        <div class="text-center reveal" style="margin-bottom: var(--space-xl);">
+          <span class="eyebrow">Let's talk</span>
+          <h2 class="h2">Tell us about you.</h2>
+        </div>
+
+        <div class="interest-form reveal">
+          <form class="form" data-placeholder-form data-success-message="Thank you! We read every response personally — Hannah will reach out if it seems like a good fit. 💛">
+            <div class="form__row form__row--split">
+              <div class="form__field">
+                <label for="t-name">Name</label>
+                <input type="text" id="t-name" name="name" placeholder="Your full name" required>
+              </div>
+              <div class="form__field">
+                <label for="t-email">Email</label>
+                <input type="email" id="t-email" name="email" placeholder="you@example.com" required>
+              </div>
+            </div>
+
+            <div class="form__row form__row--split">
+              <div class="form__field">
+                <label for="t-state">State(s) licensed in</label>
+                <input type="text" id="t-state" name="states" placeholder="e.g. California, New York">
+              </div>
+              <div class="form__field">
+                <label for="t-license">License type</label>
+                <input type="text" id="t-license" name="license" placeholder="e.g. LCSW, LMFT, LPC, PsyD">
+              </div>
+            </div>
+
+            <div class="form__field">
+              <label for="t-modalities">Primary modalities / specialties</label>
+              <input type="text" id="t-modalities" name="modalities" placeholder="e.g. somatic, attachment-based, IFS, EMDR">
+            </div>
+
+            <div class="form__field">
+              <label for="t-notes">Anything you want us to know?</label>
+              <textarea id="t-notes" name="notes" placeholder="Tell us a bit about your practice, what's working, what's not, or anything else on your mind."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <p class="form__status" role="status"></p>
+          </form>
+
+          <p class="waitlist__micro text-center" style="color: var(--text-muted); opacity: 1;">We read every response personally. No mass emails, no spam — just Hannah (founder) reaching out if it seems like a good fit.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer bg-charcoal">
+    <div class="container footer__inner">
+      <div>
+        <div class="footer__brand">girl<span>therapy</span></div>
+        <p class="footer__tagline">Real support for the real stuff girls go through, on your time and terms.</p>
+      </div>
+
+      <div class="footer__links">
+        <div class="footer__links-row">
+          <a href="index.html#problem">Why Girl Therapy</a>
+          <a href="therapists.html">For Therapists</a>
+          <a href="index.html#waitlist">Join the Waitlist</a>
+        </div>
+        <div class="footer__social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></a>
+          <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-3.16 19.5c.05-.85.1-2.2.2-2.6.5-2.1 2.4-9 2.4-9s-.6-1.2-.6-2.9c0-2.8 1.6-4.9 3.6-4.9 1.7 0 2.5 1.3 2.5 2.8 0 1.7-1.1 4.3-1.6 6.6-.5 1.9.9 3.5 2.8 3.5 3.4 0 5.7-4.3 5.7-9.4C23.8 5.9 20.2 2 14.5 2c-6.5 0-10.3 4.9-10.3 10 0 1.9.7 3.2 1.6 4.2.3.3.3.5.2.9 0 .3-.2 1-.3 1.3-.1.3-.3.4-.6.3-1.7-.7-2.7-3-2.7-4.8 0-3.5 2.5-8.3 9.4-8.3 4.9 0 8.7 3.5 8.7 8.2 0 4.9-3.1 8.8-7.3 8.8-1.4 0-2.8-.7-3.2-1.6 0 0-.7 2.8-.9 3.5-.3 1.1-1.1 2.6-1.7 3.5A10 10 0 1 0 12 2z"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer__legal">
+      Girl Therapy is a platform operated by Finally Therapy, LLC.
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
