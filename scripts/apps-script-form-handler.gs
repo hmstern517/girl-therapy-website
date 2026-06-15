@@ -13,7 +13,7 @@
  * 6. Copy the Web App URL — send it back to Claude to wire up the site forms
  *
  * Expects two tabs in this Sheet, with header rows already in place:
- *   "Waitlist"           -> Timestamp | Email
+ *   "Waitlist"           -> Timestamp | Phone | Email | SMS Consent
  *   "Therapist Interest" -> Timestamp | Name | Email | States Licensed | License Type | Modalities | Notes
  */
 
@@ -26,7 +26,12 @@ function doPost(e) {
 
     if (formType === 'waitlist') {
       const sheet = ss.getSheetByName('Waitlist');
-      sheet.appendRow([timestamp, data.email || '']);
+      sheet.appendRow([
+        timestamp,
+        data.phone || '',
+        data.email || '',
+        data.smsConsent === 'on' ? 'Yes' : 'No'
+      ]);
     } else if (formType === 'therapist') {
       const sheet = ss.getSheetByName('Therapist Interest');
       sheet.appendRow([

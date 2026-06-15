@@ -927,6 +927,60 @@ h2 .accent-script {
   flex-shrink: 0;
 }
 
+.waitlist-form {
+  text-align: left;
+}
+
+.waitlist-form .form__row--split {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 600px) {
+  .waitlist-form .form__row--split {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form__optional {
+  font-weight: 400;
+  opacity: 0.6;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.form__checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.form__checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin: 0.1em 0 0;
+  accent-color: var(--pink-deep);
+  cursor: pointer;
+}
+
+.form__checkbox span {
+  text-align: left;
+}
+
+.waitlist .form__checkbox {
+  color: var(--charcoal);
+  opacity: 0.75;
+}
+
+.waitlist .form__status {
+  color: var(--off-white);
+}
+
 .waitlist__micro {
   margin-top: var(--space-md);
   font-size: 0.875rem;

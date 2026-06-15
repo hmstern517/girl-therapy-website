@@ -166,14 +166,26 @@
       <div class="container waitlist__inner reveal">
         <span class="eyebrow">Build in private</span>
         <h2 class="h2">Be first. Be founding.</h2>
-        <p class="waitlist__body body-lg">We're building Girl Therapy in private right now — and we want you in the room. Join the waitlist for early access, founding member perks, and a front-row seat as we grow.</p>
+        <p class="waitlist__body body-lg">We're building Girl Therapy in private right now — and we want you in the room. Join the waitlist for early access, founding member perks, and a front-row seat as we grow. Heads up: we're texting first, so phone number's the move.</p>
 
-        <form class="form form--inline" data-placeholder-form data-form-type="waitlist" data-success-message="You're on the list! We can't wait to grow with you. 💛">
-          <div class="form__field">
-            <label for="waitlist-email">Email address</label>
-            <input type="email" id="waitlist-email" name="email" placeholder="you@example.com" required>
+        <form class="form waitlist-form" data-placeholder-form data-form-type="waitlist" data-success-message="You're on the list! Watch your texts — we'll be in touch. 💛">
+          <div class="form__row form__row--split">
+            <div class="form__field">
+              <label for="waitlist-phone">Phone number</label>
+              <input type="tel" id="waitlist-phone" name="phone" placeholder="(555) 123-4567" autocomplete="tel" inputmode="tel" required>
+            </div>
+            <div class="form__field">
+              <label for="waitlist-email">Email <span class="form__optional">(optional)</span></label>
+              <input type="email" id="waitlist-email" name="email" placeholder="you@example.com" autocomplete="email">
+            </div>
           </div>
-          <button type="submit" class="btn btn-on-dark">Join the waitlist</button>
+
+          <label class="form__checkbox">
+            <input type="checkbox" name="smsConsent" required>
+            <span>Yes, text me updates from Girl Therapy. Msg &amp; data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help.</span>
+          </label>
+
+          <button type="submit" class="btn btn-primary">Join the waitlist</button>
         </form>
         <p class="form__status" role="status"></p>
 
