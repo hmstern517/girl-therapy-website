@@ -3,254 +3,300 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Girl Therapy — Finally, therapy that speaks your language.</title>
-  <meta name="description" content="Girl Therapy is a telehealth platform built exclusively for women, by women. Join the waitlist for early access and founding member perks.">
+  <title>Girl Therapy — Coming Soon</title>
+  <meta name="description" content="Therapy is about to get a glow up. Girl Therapy is a telehealth platform built exclusively for women, by women. Be the first to know.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Hanken+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      color: #fff;
+      background: #FF66C4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: #FFECAD;
+      color: #2E1F28;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(48px, 7vw, 80px) clamp(22px, 6vw, 56px);
+      background: #FF66C4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__inner {
+      width: 100%;
+      max-width: 880px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__eyebrow {
+      display: inline-block;
+      margin: 0 auto clamp(18px, 2.5vw, 28px);
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: clamp(22px, 3.2vw, 34px);
+      color: #FFECAD;
+      transform: rotate(-3deg);
+    }
+
+    h1 {
+      margin: 0 auto;
+      max-width: 14ch;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(44px, 8vw, 98px);
+      line-height: 1.0;
+      letter-spacing: -0.04em;
+      color: #fff;
+    }
+
+    h1 .highlight {
+      color: #FFECAD;
+    }
+
+    .hero__sub {
+      margin: clamp(22px, 3vw, 30px) auto 0;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: clamp(18px, 2.3vw, 26px);
+      letter-spacing: -0.01em;
+      color: #FFF0F8;
+      max-width: 38ch;
+    }
+
+    /* ===== Form ===== */
+    form {
+      margin: clamp(28px, 3.5vw, 40px) auto 0;
+      max-width: 520px;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .field-row {
+      display: flex;
+      gap: 11px;
+      flex-wrap: wrap;
+    }
+
+    input[type="tel"],
+    input[type="email"] {
+      flex: 1;
+      min-width: 220px;
+      padding: 18px 26px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      font-size: 16px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      color: #2E1F28;
+      background: #fff;
+      outline: none;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      width: 100%;
+    }
+
+    input[type="tel"]:focus,
+    input[type="email"]:focus {
+      border-color: #FFECAD;
+      box-shadow: 0 0 0 4px rgba(255, 236, 173, 0.45);
+    }
+
+    input::placeholder {
+      color: #A99AA3;
+    }
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      text-align: left;
+      padding: 4px 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #FFF0F8;
+    }
+
+    .consent input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin: 0.15em 0 0;
+      accent-color: #FFECAD;
+      cursor: pointer;
+    }
+
+    .consent label {
+      cursor: pointer;
+    }
+
+    button[type="submit"] {
+      margin-top: 4px;
+      padding: 18px 32px;
+      border-radius: 999px;
+      border: none;
+      background: #FFECAD;
+      color: #2E1F28;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      box-shadow: 0 16px 34px -14px rgba(255, 236, 173, 0.9);
+      transition: transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 40px -12px rgba(255, 236, 173, 0.95);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 24px;
+      border-radius: 18px;
+      background: #FFECAD;
+      color: #2E1F28;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .success.is-visible {
+      display: flex;
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .error.is-visible {
+      display: block;
+    }
+
+    .micro {
+      margin: 16px auto 0;
+      font-size: 12px;
+      color: #FFD7EC;
+      opacity: 0.85;
+      max-width: 46ch;
+    }
+
+    /* ===== Decorative blobs ===== */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .blob--1 {
+      width: 320px;
+      height: 320px;
+      background: #FFECAD;
+      top: -100px;
+      left: -80px;
+      opacity: 0.18;
+    }
+
+    .blob--2 {
+      width: 260px;
+      height: 260px;
+      background: #FFF2E2;
+      bottom: -80px;
+      right: -60px;
+      opacity: 0.15;
+    }
+
+    @media (max-width: 540px) {
+      .field-row {
+        flex-direction: column;
+      }
+      input[type="tel"],
+      input[type="email"] {
+        min-width: 0;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ============ NAV ============ -->
-  <header class="nav">
-    <div class="container nav__inner">
-      <a href="index.html" class="nav__logo">girl<span>therapy</span></a>
+  <section class="hero">
+    <div class="blob blob--1" aria-hidden="true"></div>
+    <div class="blob blob--2" aria-hidden="true"></div>
 
-      <nav class="nav__links" aria-label="Primary">
-        <a href="#problem">Why Girl Therapy</a>
-        <a href="#pillars">Our Approach</a>
-        <a href="therapists.html">For Therapists</a>
-      </nav>
+    <div class="hero__inner">
+      <span class="hero__eyebrow">girl therapy</span>
 
-      <a href="#waitlist" class="btn btn-primary nav__cta">Join the waitlist</a>
+      <h1>therapy is about to get a <span class="highlight">glow up</span></h1>
 
-      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+      <p class="hero__sub">Real support for the real stuff girls go through, on your time and terms. Be the first to know.</p>
+
+      <form id="waitlist-form" data-form-type="waitlist">
+        <div class="form-fields" data-wl-form>
+          <div class="field-row">
+            <label for="wl-phone" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Phone number</label>
+            <input type="tel" id="wl-phone" name="phone" required placeholder="your phone number" autocomplete="tel" inputmode="tel">
+          </div>
+          <div class="field-row">
+            <label for="wl-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Email (optional)</label>
+            <input type="email" id="wl-email" name="email" placeholder="your email (optional)" autocomplete="email">
+          </div>
+
+          <div class="consent">
+            <input type="checkbox" id="wl-consent" name="smsConsent" required>
+            <label for="wl-consent">Yes, text me updates from Girl Therapy. Msg &amp; data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help.</label>
+          </div>
+
+          <button type="submit">join the waitlist</button>
+        </div>
+
+        <div class="success" data-wl-success>★ you're on the list — the glow up is coming to your phone.</div>
+        <div class="error" data-wl-error>Something went wrong — please try again or reach us directly.</div>
+      </form>
+
+      <p class="micro">No spam. Just real updates on real progress. Unsubscribe anytime.</p>
     </div>
-    <div class="nav__mobile">
-      <a href="#problem">Why Girl Therapy</a>
-      <a href="#pillars">Our Approach</a>
-      <a href="therapists.html">For Therapists</a>
-      <a href="#waitlist" class="btn btn-primary">Join the waitlist</a>
-    </div>
-  </header>
-
-  <main>
-
-    <!-- ============ HERO ============ -->
-    <section class="hero bg-off-white">
-      <div class="container hero__grid">
-        <div>
-          <span class="eyebrow">Telehealth therapy, built for women</span>
-          <h1 class="hero__headline">Finally, therapy that <span class="accent-script">speaks your language.</span></h1>
-          <p class="hero__sub body-lg">Real support for the real stuff girls go through — on your time and terms. Girl Therapy is a telehealth platform built exclusively for women, by women.</p>
-          <div class="hero__actions">
-            <a href="#waitlist" class="btn btn-primary">Join the waitlist</a>
-            <a href="therapists.html" class="btn btn-secondary">I'm a therapist →</a>
-          </div>
-        </div>
-
-        <div class="hero__visual">
-          <div class="hero__blob hero__blob--1" aria-hidden="true"></div>
-          <div class="hero__blob hero__blob--2" aria-hidden="true"></div>
-          <div class="hero__photo hero__photo--main photo-placeholder photo-placeholder--pink" role="img" aria-label="Woman relaxing comfortably at home, taking a moment for herself">
-            <span class="photo-placeholder__label">photo: a real moment of rest</span>
-          </div>
-          <div class="hero__photo hero__photo--accent photo-placeholder photo-placeholder--orange" role="img" aria-label="Close-up of a cozy, comforting moment">
-            <span class="photo-placeholder__label">photo: cozy details</span>
-          </div>
-          <span class="tag tag--yellow hero__tag" style="top: 12%; right: -4%;">she's overthinking this 🫶</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ THE PROBLEM ============ -->
-    <section class="section problem bg-cream" id="problem">
-      <div class="container problem__inner reveal">
-        <span class="eyebrow">The real talk</span>
-        <h2 class="h2">You've been doing this alone for too long.</h2>
-        <div class="problem__body body-lg">
-          <p>You're told you can have it all — the career, the relationships, the body, the glow-up. What nobody tells you is who's supposed to hold it all together while you're busy becoming her.</p>
-          <p>So you overthink. You future-trip. You compare your inside to everyone's outside. And somewhere along the way, "I should probably talk to someone" became a thought you've had a hundred times and acted on zero.</p>
-          <p>That's not a personal failing. That's a system that wasn't built for you.</p>
-        </div>
-        <p class="problem__quote">"Hot girls go to therapy" — and we mean that with our whole chest.</p>
-      </div>
-    </section>
-
-    <!-- ============ THREE PILLARS ============ -->
-    <section class="section bg-off-white" id="pillars">
-      <div class="container">
-        <div class="pillars__head reveal">
-          <span class="eyebrow">Our approach</span>
-          <h2 class="h2">Therapy that actually gets how your brain and body work.</h2>
-          <p class="pillars__intro body-lg">Every therapist on Girl Therapy is trained in an approach built around three things we know matter most for women's mental health.</p>
-        </div>
-
-        <div class="pillars__grid">
-          <div class="pillar-card reveal">
-            <span class="pillar-card__tab">somatic</span>
-            <h3>Your body keeps score too.</h3>
-            <p>Anxiety isn't just in your head — it's in your shoulders, your stomach, your sleep. Somatic therapy helps you understand what your body's been trying to tell you, so healing isn't just talked about. It's felt.</p>
-          </div>
-
-          <div class="pillar-card reveal">
-            <span class="pillar-card__tab">attachment</span>
-            <h3>The patterns started somewhere.</h3>
-            <p>That thing where you either disappear in relationships or white-knuckle control? There's a reason. Attachment-based therapy helps you understand your patterns — with partners, friends, family, even yourself — so you can finally write a different story.</p>
-          </div>
-
-          <div class="pillar-card reveal">
-            <span class="pillar-card__tab">IFS</span>
-            <h3>All your "parts" are welcome here.</h3>
-            <p>The overachiever. The people-pleaser. The one who's "fine." IFS therapy helps you get to know every part of yourself — even the messy ones — without judgment. Healing isn't about silencing parts of you. It's about understanding them.</p>
-          </div>
-        </div>
-
-        <p class="pillars__footnote reveal">Need something more specialized? We also offer <strong>EMDR</strong> with select therapists for deeper trauma work.</p>
-      </div>
-    </section>
-
-    <!-- ============ WHY DIFFERENT ============ -->
-    <section class="section bg-yellow">
-      <div class="container">
-        <div class="pillars__head reveal">
-          <span class="eyebrow">What makes us, us</span>
-          <h2 class="h2">Built different, on purpose.</h2>
-        </div>
-
-        <div class="why-different__grid">
-          <div class="why-card reveal">
-            <div class="why-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FF66C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <h3>All-female therapist network</h3>
-            <p>Every therapist on our platform is a woman who specializes in the things women actually deal with — relationship patterns, imposter syndrome, body image, ambition and guilt, family dynamics, and more. No explaining yourself from scratch. No "well, have you tried yoga?"</p>
-          </div>
-
-          <div class="why-card reveal">
-            <div class="why-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FF66C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            </div>
-            <h3>Give Therapy</h3>
-            <p>For every client who books with us, we help fund therapy for a woman who couldn't otherwise afford it. Access to mental health care shouldn't be a privilege. Give Therapy is how we make sure it isn't just one.</p>
-          </div>
-
-          <div class="why-card reveal">
-            <div class="why-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FF66C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            </div>
-            <h3>On your time, on your terms</h3>
-            <p>Telehealth means therapy fits into your actual life — not the other way around. No waiting rooms. No driving across town. Just real support, wherever you are.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ BRAND MOMENT ============ -->
-    <section class="section brand-moment bg-charcoal">
-      <div class="brand-moment__inner reveal">
-        <div class="brand-moment__photo photo-placeholder photo-placeholder--charcoal" role="img" aria-label="Close-up of a cream sweatshirt with embroidered text reading Hot Girls Go to Therapy">
-          <span class="photo-placeholder__label">photo: "hot girls go to therapy" sweatshirt</span>
-        </div>
-        <div class="brand-moment__content">
-          <span class="accent-script">this isn't your mom's therapy app.</span>
-          <h2 class="h2">Hot girls go to therapy.</h2>
-          <p class="body-lg">Girl Therapy is bold because the stuff you're carrying is heavy. We believe in showing up as your full self — messy mornings, unread messages, and all. Therapy should feel like something you <em>want</em> to be part of, not something you're ashamed to need.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ WAITLIST ============ -->
-    <section class="section waitlist bg-pink" id="waitlist">
-      <div class="container waitlist__inner reveal">
-        <span class="eyebrow">Build in private</span>
-        <h2 class="h2">Be first. Be founding.</h2>
-        <p class="waitlist__body body-lg">We're building Girl Therapy in private right now — and we want you in the room. Join the waitlist for early access, founding member perks, and a front-row seat as we grow. Heads up: we're texting first, so phone number's the move.</p>
-
-        <form class="form waitlist-form" data-placeholder-form data-form-type="waitlist" data-success-message="You're on the list! Watch your texts — we'll be in touch. 💛">
-          <div class="form__row form__row--split">
-            <div class="form__field">
-              <label for="waitlist-phone">Phone number</label>
-              <input type="tel" id="waitlist-phone" name="phone" placeholder="(555) 123-4567" autocomplete="tel" inputmode="tel" required>
-            </div>
-            <div class="form__field">
-              <label for="waitlist-email">Email <span class="form__optional">(optional)</span></label>
-              <input type="email" id="waitlist-email" name="email" placeholder="you@example.com" autocomplete="email">
-            </div>
-          </div>
-
-          <label class="form__checkbox">
-            <input type="checkbox" name="smsConsent" required>
-            <span>Yes, text me updates from Girl Therapy. Msg &amp; data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help.</span>
-          </label>
-
-          <button type="submit" class="btn btn-primary">Join the waitlist</button>
-        </form>
-        <p class="form__status" role="status"></p>
-
-        <p class="waitlist__micro">No spam. Just real updates on real progress. Unsubscribe anytime.</p>
-      </div>
-    </section>
-
-    <!-- ============ THERAPIST TEASER ============ -->
-    <section class="section bg-cream">
-      <div class="container teaser reveal">
-        <div class="teaser__content">
-          <span class="eyebrow">Calling all clinicians</span>
-          <h2 class="h2">Are you a therapist who gets it?</h2>
-          <p class="body-lg">We're building a network of women therapists who specialize in women's mental health — and we're recruiting early. If that's you, we'd love to hear from you.</p>
-          <a href="therapists.html" class="btn btn-primary">Learn more →</a>
-        </div>
-
-        <div class="teaser__card">
-          <span class="tag tag--yellow">founding therapist 🌟</span>
-          <h3>What founding therapists get</h3>
-          <ul>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              A real say in how Girl Therapy is built
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              Early access ahead of public launch
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              A clinical framework built around how you already practice
-            </li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ============ FOOTER ============ -->
-  <footer class="footer bg-charcoal">
-    <div class="container footer__inner">
-      <div>
-        <div class="footer__brand">girl<span>therapy</span></div>
-        <p class="footer__tagline">Real support for the real stuff girls go through, on your time and terms.</p>
-      </div>
-
-      <div class="footer__links">
-        <div class="footer__links-row">
-          <a href="#problem">Why Girl Therapy</a>
-          <a href="therapists.html">For Therapists</a>
-          <a href="#waitlist">Join the Waitlist</a>
-        </div>
-        <div class="footer__social">
-          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
-          <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></a>
-          <a href="#" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-3.16 19.5c.05-.85.1-2.2.2-2.6.5-2.1 2.4-9 2.4-9s-.6-1.2-.6-2.9c0-2.8 1.6-4.9 3.6-4.9 1.7 0 2.5 1.3 2.5 2.8 0 1.7-1.1 4.3-1.6 6.6-.5 1.9.9 3.5 2.8 3.5 3.4 0 5.7-4.3 5.7-9.4C23.8 5.9 20.2 2 14.5 2c-6.5 0-10.3 4.9-10.3 10 0 1.9.7 3.2 1.6 4.2.3.3.3.5.2.9 0 .3-.2 1-.3 1.3-.1.3-.3.4-.6.3-1.7-.7-2.7-3-2.7-4.8 0-3.5 2.5-8.3 9.4-8.3 4.9 0 8.7 3.5 8.7 8.2 0 4.9-3.1 8.8-7.3 8.8-1.4 0-2.8-.7-3.2-1.6 0 0-.7 2.8-.9 3.5-.3 1.1-1.1 2.6-1.7 3.5A10 10 0 1 0 12 2z"/></svg></a>
-        </div>
-      </div>
-    </div>
-    <div class="container footer__legal">
-      Girl Therapy is a platform operated by Finally Therapy, LLC.
-    </div>
-  </footer>
+  </section>
 
   <script src="assets/js/main.js"></script>
 </body>

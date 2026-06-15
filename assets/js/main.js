@@ -52,29 +52,51 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================
   // Form submission → Google Sheet via Apps Script
   // ============================================
-  // Once deployed (see scripts/apps-script-form-handler.gs), paste the
-  // Web App URL below. Until then, forms show a success message but
-  // don't submit anywhere.
+  // Deployed Apps Script web app (see scripts/apps-script-form-handler.gs).
   const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxKM0AsGSR7_06VDc8bgAv-JQHj12_Rnc4Il4eiU5VD6IBuyiuHukO1OznD3Q7106jZrQ/exec';
 
-  document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
+  // Forms can use either pattern:
+  //  - data-placeholder-form + .form__status (older multi-section pages)
+  //  - data-form-type + data-wl-form / data-wl-success / data-wl-error (coming-soon hero)
+  document.querySelectorAll('[data-placeholder-form], #waitlist-form').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const formType = form.dataset.formType || 'waitlist';
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      // Pattern A: status line
       const status = form.querySelector('.form__status');
       const successMessage = form.dataset.successMessage || "Thanks! We'll be in touch soon.";
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const formType = form.dataset.formType || 'waitlist';
 
-      const showStatus = (message) => {
+      // Pattern B: success/error blocks + form-fields container
+      const fieldsBlock = form.querySelector('[data-wl-form]');
+      const successBlock = form.querySelector('[data-wl-success]');
+      const errorBlock = form.querySelector('[data-wl-error]');
+
+      const showSuccess = () => {
         if (status) {
-          status.textContent = message;
+          status.textContent = successMessage;
           status.classList.add('is-visible');
+        }
+        if (fieldsBlock) fieldsBlock.style.display = 'none';
+        if (successBlock) successBlock.classList.add('is-visible');
+        if (errorBlock) errorBlock.classList.remove('is-visible');
+      };
+
+      const showError = (message) => {
+        if (status) {
+          status.textContent = message || "Something went wrong — please try again or email us directly.";
+          status.classList.add('is-visible');
+        }
+        if (errorBlock) {
+          if (message) errorBlock.textContent = message;
+          errorBlock.classList.add('is-visible');
         }
       };
 
       if (!FORM_ENDPOINT) {
-        // No endpoint configured yet — show success message only.
-        showStatus(successMessage);
+        showSuccess();
         form.reset();
         return;
       }
@@ -96,11 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // With mode: 'no-cors' we can't read the response, so we
         // optimistically show success. Errors will still show in
         // the Apps Script execution log for debugging.
-        showStatus(successMessage);
+        showSuccess();
         form.reset();
       } catch (err) {
-        showStatus("Something went wrong — please try again or email us directly.");
-      } finally {
+        showError();
         if (submitBtn) submitBtn.disabled = false;
       }
     });
