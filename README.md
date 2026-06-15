@@ -36,10 +36,17 @@ Colors, type, and spacing are defined as CSS variables at the top of
       placeholders (`.photo-placeholder` classes). Swap these for real
       photography from the brand book — see inline `aria-label`s for what
       each photo should depict.
-- [ ] **Forms**: Both the waitlist signup (index.html) and therapist interest
-      form (therapists.html) are visual-only (`data-placeholder-form` in
-      main.js). Wire to a Google Sheet, Mailchimp, ConvertKit, or similar —
-      replace the submit handler in `assets/js/main.js`.
+- [ ] **Forms**: Apps Script handler is ready at `scripts/apps-script-form-handler.gs`.
+      To activate:
+      1. Create a Google Sheet with tabs `Waitlist` (Timestamp | Email) and
+         `Therapist Interest` (Timestamp | Name | Email | States Licensed |
+         License Type | Modalities | Notes)
+      2. Paste the script into Extensions → Apps Script, deploy as a Web App
+         (Execute as: Me, Access: Anyone)
+      3. Paste the deployment URL into `FORM_ENDPOINT` in `assets/js/main.js`
+      Until `FORM_ENDPOINT` is set, forms show a success message but don't
+      submit anywhere — fine for early sharing, just don't rely on it for
+      real signups yet.
 - [ ] **Social links**: Footer social icons are placeholders (`href="#"`).
       Update with real Instagram / TikTok / Pinterest URLs.
 - [ ] **Favicon / meta images**: Add favicon and Open Graph / social share images.

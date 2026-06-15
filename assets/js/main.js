@@ -49,21 +49,60 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
 
-  // Placeholder form handling
-  // NOTE: These forms are not yet wired to a backend (Google Sheet / ESP).
-  // Replace this handler with a fetch() call to your form endpoint when ready.
+  // ============================================
+  // Form submission → Google Sheet via Apps Script
+  // ============================================
+  // Once deployed (see scripts/apps-script-form-handler.gs), paste the
+  // Web App URL below. Until then, forms show a success message but
+  // don't submit anywhere.
+  const FORM_ENDPOINT = ''; // e.g. 'https://script.google.com/macros/s/XXXXXXXX/exec'
+
   document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const status = form.querySelector('.form__status');
       const successMessage = form.dataset.successMessage || "Thanks! We'll be in touch soon.";
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const formType = form.dataset.formType || 'waitlist';
 
-      if (status) {
-        status.textContent = successMessage;
-        status.classList.add('is-visible');
+      const showStatus = (message) => {
+        if (status) {
+          status.textContent = message;
+          status.classList.add('is-visible');
+        }
+      };
+
+      if (!FORM_ENDPOINT) {
+        // No endpoint configured yet — show success message only.
+        showStatus(successMessage);
+        form.reset();
+        return;
       }
 
-      form.reset();
+      const payload = { formType };
+      new FormData(form).forEach((value, key) => {
+        payload[key] = value;
+      });
+
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors', // Apps Script web apps don't return CORS headers
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+        });
+        // With mode: 'no-cors' we can't read the response, so we
+        // optimistically show success. Errors will still show in
+        // the Apps Script execution log for debugging.
+        showStatus(successMessage);
+        form.reset();
+      } catch (err) {
+        showStatus("Something went wrong — please try again or email us directly.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
   });
 });
