@@ -1,0 +1,69 @@
+// ============================================
+// GIRL THERAPY — Shared interactions
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Mobile nav toggle
+  const toggle = document.querySelector('.nav__toggle');
+  const mobileNav = document.querySelector('.nav__mobile');
+
+  if (toggle && mobileNav) {
+    toggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close mobile nav on link click
+    mobileNav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+
+  if ('IntersectionObserver' in window && revealEls.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+    revealEls.forEach((el) => observer.observe(el));
+
+    // Safety net: reveal anything still hidden shortly after load
+    // (covers edge cases where the observer doesn't fire, e.g. very
+    // short pages, print views, or non-standard viewports)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+      }, 1200);
+    });
+  } else {
+    revealEls.forEach((el) => el.classList.add('is-visible'));
+  }
+
+  // Placeholder form handling
+  // NOTE: These forms are not yet wired to a backend (Google Sheet / ESP).
+  // Replace this handler with a fetch() call to your form endpoint when ready.
+  document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = form.querySelector('.form__status');
+      const successMessage = form.dataset.successMessage || "Thanks! We'll be in touch soon.";
+
+      if (status) {
+        status.textContent = successMessage;
+        status.classList.add('is-visible');
+      }
+
+      form.reset();
+    });
+  });
+});
