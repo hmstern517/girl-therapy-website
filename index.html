@@ -42,28 +42,17 @@
 
     .hero__inner {
       width: 100%;
-      max-width: 880px;
+      max-width: 960px;
       position: relative;
       z-index: 1;
     }
 
-    .hero__eyebrow {
-      display: inline-block;
-      margin: 0 auto clamp(18px, 2.5vw, 28px);
-      font-family: 'Dancing Script', cursive;
-      font-weight: 700;
-      font-size: clamp(22px, 3.2vw, 34px);
-      color: #FFECAD;
-      transform: rotate(-3deg);
-    }
-
     h1 {
       margin: 0 auto;
-      max-width: 14ch;
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      font-size: clamp(44px, 8vw, 98px);
-      line-height: 1.0;
+      font-size: clamp(72px, 14vw, 180px);
+      line-height: 0.95;
       letter-spacing: -0.04em;
       color: #fff;
     }
@@ -73,93 +62,114 @@
     }
 
     .hero__sub {
-      margin: clamp(22px, 3vw, 30px) auto 0;
+      margin: clamp(24px, 3vw, 36px) auto 0;
       font-family: 'Outfit', sans-serif;
       font-weight: 600;
       font-size: clamp(18px, 2.3vw, 26px);
       letter-spacing: -0.01em;
       color: #FFF0F8;
-      max-width: 38ch;
     }
 
     /* ===== Form ===== */
     form {
-      margin: clamp(28px, 3.5vw, 40px) auto 0;
+      margin: clamp(28px, 3.5vw, 44px) auto 0;
       max-width: 520px;
     }
 
     .form-fields {
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 14px;
     }
 
-    .field-row {
-      display: flex;
-      gap: 11px;
-      flex-wrap: wrap;
+    .input-wrap {
+      position: relative;
     }
 
     input[type="tel"],
-    input[type="email"] {
-      flex: 1;
-      min-width: 220px;
-      padding: 18px 26px;
+    input[type="email"],
+    input[type="text"] {
+      width: 100%;
+      padding: 20px 28px;
       border-radius: 999px;
       border: 2px solid #fff;
-      font-size: 16px;
+      font-size: 17px;
       font-family: 'Hanken Grotesk', sans-serif;
       color: #2E1F28;
       background: #fff;
       outline: none;
       transition: box-shadow 0.2s, border-color 0.2s;
-      width: 100%;
     }
 
-    input[type="tel"]:focus,
-    input[type="email"]:focus {
+    input:focus {
       border-color: #FFECAD;
       box-shadow: 0 0 0 4px rgba(255, 236, 173, 0.45);
     }
 
     input::placeholder {
-      color: #A99AA3;
+      color: #B8A8B2;
     }
 
-    .consent {
+    /* Consent rows */
+    .consent-row {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
       text-align: left;
-      padding: 4px 8px;
-      font-size: 13px;
+      padding: 2px 4px;
+      font-size: 13.5px;
       line-height: 1.5;
       color: #FFF0F8;
     }
 
-    .consent input[type="checkbox"] {
+    .consent-row input[type="checkbox"] {
       width: 20px;
       height: 20px;
       flex-shrink: 0;
-      margin: 0.15em 0 0;
+      margin: 0.1em 0 0;
       accent-color: #FFECAD;
       cursor: pointer;
+      border-radius: 4px;
     }
 
-    .consent label {
+    .consent-row label {
       cursor: pointer;
     }
 
+    /* Consent shake animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-8px); }
+      40%       { transform: translateX(8px); }
+      60%       { transform: translateX(-6px); }
+      80%       { transform: translateX(6px); }
+    }
+
+    .consent-row.shake {
+      animation: shake 0.45s ease;
+    }
+
+    .consent-row.highlight-required label {
+      color: #FFECAD;
+      font-weight: 700;
+    }
+
+    .consent-row.highlight-required input[type="checkbox"] {
+      outline: 2px solid #FFECAD;
+      outline-offset: 2px;
+    }
+
+    /* Submit */
     button[type="submit"] {
       margin-top: 4px;
-      padding: 18px 32px;
+      padding: 20px 32px;
       border-radius: 999px;
       border: none;
       background: #FFECAD;
       color: #2E1F28;
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      font-size: 17px;
+      font-size: 18px;
       letter-spacing: -0.01em;
       cursor: pointer;
       box-shadow: 0 16px 34px -14px rgba(255, 236, 173, 0.9);
@@ -179,17 +189,19 @@
       transform: none;
     }
 
+    /* Success */
     .success {
       display: none;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 18px 24px;
+      padding: 20px 28px;
       border-radius: 18px;
       background: #FFECAD;
       color: #2E1F28;
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
+      font-size: 17px;
       text-align: center;
     }
 
@@ -197,101 +209,50 @@
       display: flex;
     }
 
-    .error {
-      display: none;
-      margin-top: 12px;
-      padding: 14px 20px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .error.is-visible {
-      display: block;
-    }
-
+    /* Micro */
     .micro {
-      margin: 16px auto 0;
+      margin: 18px auto 0;
       font-size: 12px;
       color: #FFD7EC;
-      opacity: 0.85;
-      max-width: 46ch;
-    }
-
-    /* ===== Decorative blobs ===== */
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.35;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .blob--1 {
-      width: 320px;
-      height: 320px;
-      background: #FFECAD;
-      top: -100px;
-      left: -80px;
-      opacity: 0.18;
-    }
-
-    .blob--2 {
-      width: 260px;
-      height: 260px;
-      background: #FFF2E2;
-      bottom: -80px;
-      right: -60px;
-      opacity: 0.15;
-    }
-
-    @media (max-width: 540px) {
-      .field-row {
-        flex-direction: column;
-      }
-      input[type="tel"],
-      input[type="email"] {
-        min-width: 0;
-      }
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
 
   <section class="hero">
-    <div class="blob blob--1" aria-hidden="true"></div>
-    <div class="blob blob--2" aria-hidden="true"></div>
-
     <div class="hero__inner">
-      <span class="hero__eyebrow">girl therapy</span>
 
       <h1>therapy is about to get a <span class="highlight">glow up</span></h1>
 
-      <p class="hero__sub">Real support for the real stuff girls go through, on your time and terms. Be the first to know.</p>
+      <p class="hero__sub">Be the first to know.</p>
 
       <form id="waitlist-form" data-form-type="waitlist">
         <div class="form-fields" data-wl-form>
-          <div class="field-row">
-            <label for="wl-phone" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Phone number</label>
-            <input type="tel" id="wl-phone" name="phone" required placeholder="your phone number" autocomplete="tel" inputmode="tel">
-          </div>
-          <div class="field-row">
-            <label for="wl-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Email (optional)</label>
-            <input type="email" id="wl-email" name="email" placeholder="your email (optional)" autocomplete="email">
+
+          <!-- Single input — toggles between tel and email -->
+          <div class="input-wrap">
+            <input type="tel" id="wl-input" name="phone" required
+              placeholder="your phone number"
+              autocomplete="tel" inputmode="tel">
           </div>
 
-          <div class="consent">
+          <!-- SMS consent (required) -->
+          <div class="consent-row" id="sms-consent-row">
             <input type="checkbox" id="wl-consent" name="smsConsent" required>
             <label for="wl-consent">Yes, text me updates from Girl Therapy. Msg &amp; data rates may apply. Msg frequency varies. Reply STOP to opt out, HELP for help.</label>
+          </div>
+
+          <!-- Email toggle (optional) -->
+          <div class="consent-row" id="email-toggle-row">
+            <input type="checkbox" id="wl-email-toggle">
+            <label for="wl-email-toggle">I'd rather give you my email.</label>
           </div>
 
           <button type="submit">join the waitlist</button>
         </div>
 
-        <div class="success" data-wl-success>★ you're on the list — the glow up is coming to your phone.</div>
-        <div class="error" data-wl-error>Something went wrong — please try again or reach us directly.</div>
+        <div class="success" data-wl-success>★ you're on the list — the glow up is coming.</div>
       </form>
 
       <p class="micro">No spam. Just real updates on real progress. Unsubscribe anytime.</p>
@@ -299,5 +260,57 @@
   </section>
 
   <script src="assets/js/main.js"></script>
+  <script>
+    const input       = document.getElementById('wl-input');
+    const emailToggle = document.getElementById('wl-email-toggle');
+    const smsRow      = document.getElementById('sms-consent-row');
+    const smsCheck    = document.getElementById('wl-consent');
+    const form        = document.getElementById('waitlist-form');
+
+    // Email toggle — swap input type, placeholder, name, and hide/show SMS consent
+    emailToggle.addEventListener('change', () => {
+      if (emailToggle.checked) {
+        input.type        = 'email';
+        input.name        = 'email';
+        input.placeholder = 'your email';
+        input.autocomplete = 'email';
+        input.inputMode   = '';
+        // Email mode: SMS consent not applicable — uncheck + hide
+        smsCheck.checked  = false;
+        smsCheck.required = false;
+        smsRow.style.display = 'none';
+      } else {
+        input.type        = 'tel';
+        input.name        = 'phone';
+        input.placeholder = 'your phone number';
+        input.autocomplete = 'tel';
+        input.inputMode   = 'tel';
+        // Back to phone mode — SMS consent required again
+        smsCheck.required = true;
+        smsRow.style.display = 'flex';
+      }
+      input.value = '';
+      input.focus();
+    });
+
+    // Consent reminder on submit — if phone mode and consent unchecked
+    // We suppress the native :required tooltip and use our own shake+highlight
+    form.addEventListener('submit', (e) => {
+      if (!emailToggle.checked && !smsCheck.checked) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        // Temporarily remove required so browser doesn't show its own tooltip
+        smsCheck.required = false;
+        smsRow.classList.remove('shake', 'highlight-required');
+        void smsRow.offsetWidth; // force reflow for animation restart
+        smsRow.classList.add('shake', 'highlight-required');
+        setTimeout(() => {
+          smsRow.classList.remove('highlight-required');
+          smsCheck.required = true; // restore required
+        }, 2800);
+        smsCheck.focus();
+      }
+    }, true);
+  </script>
 </body>
 </html>
