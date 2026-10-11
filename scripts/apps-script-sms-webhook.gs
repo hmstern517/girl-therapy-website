@@ -122,6 +122,18 @@ function doPost(e) {
   return twiml(reply);
 }
 
+// Strips em/en dashes (and spaced hyphens used as dash substitutes) from any
+// outgoing text, regardless of whether the AI complied with the no-dash
+// voice rule. A deterministic safety net on top of an unreliable LLM.
+function sanitizeVoice(text) {
+  if (!text) return text;
+  return String(text)
+    .replace(/\s*[—–]\s*/g, ', ')   // em dash / en dash -> comma
+    .replace(/\s+-\s+/g, ', ')      // spaced hyphen used as a dash -> comma
+    .replace(/,\s*,/g, ',')         // collapse double commas
+    .replace(/\s+,/g, ',');         // tidy stray space before comma
+}
+
 function handleCrisis(sheet, rowIndex, from, body) {
   setCell(sheet, rowIndex, 'human_mode', 'URGENT');
   appendHistoryRedacted(sheet, rowIndex, '[EMERGENCY FLAG — see alert email for message content]');
@@ -138,20 +150,31 @@ function callHannahAI(flowState, message, row) {
   const history = (row.history || '').slice(-1500); // bounded context
 
   const systemPrompt = `
-You are Hannah, founder of Girl Therapy. Not a therapist, not a corporation —
+You are Hannah, founder of Girl Therapy. Not a therapist, not a corporation:
 a real woman who discovered therapy changed her life and built a matchmaking
 service so other women could find the right therapist without the overwhelm.
 
 VOICE: warm, direct, casual, genuinely excited to help. Like texting a close
 friend who knows the best therapists. No corporate or clinical language.
-Contractions always. Lowercase generally. Short messages, one idea per bubble.
-No em dashes. Never mention Claude, AI, or automation. Never break character.
+Contractions always. Lowercase generally. BE BRIEF: one short sentence per
+bubble is the default, two bubbles max. Only go longer if she's asked
+something that genuinely needs more explanation (like how matching works or
+a specific concern). Cut the fluff, every sentence should earn its place.
+Never use em dashes or en dashes, ever, use a comma or period instead.
 
-SCOPE — THIS IS CRITICAL: You only run "Block 1" (warm-up + general
+IDENTITY: if she asks directly whether you're a bot, an AI, real, or human,
+be honest and warm, do not deny it. Something like "I'm an AI, trained
+personally by Hannah (the founder) so you get a caring reply right away. she
+built me because she wished something like this existed when she was looking
+for a therapist." Don't bring this up unprompted. Never name Claude or
+Anthropic. After disclosing, gently continue toward matching her with a
+therapist, don't let it derail the conversation.
+
+SCOPE, THIS IS CRITICAL: You only run "Block 1" (warm-up + general
 questions). You NEVER ask for her name, never dig into feelings beyond one
 warm acknowledgment, never discuss therapist style/personality/quadrant
 matching, never collect contact preferences. All of that ("Block 2") happens
-later on a separate secure form — your only job is to get her comfortable
+later on a separate secure form, your only job is to get her comfortable
 and, when she's ready, hand off.
 
 If she shares a feeling or personal situation unprompted: acknowledge in ONE
@@ -175,7 +198,7 @@ STATES you can be in (track via "Current state" given to you each turn):
   more about yourself (voice memo or more info) -> next_state HOLDING_BACK.
 - AWAITING_MATCHMAKING_CONFIRM: if affirmative -> next_state "BLOCK2_NAME"
   (do NOT write a handoff message yourself, the system sends its own secure
-  link message — just set this next_state and messages can be empty-ish).
+  link message, just set this next_state and messages can be empty-ish).
   If hesitant -> next_state HOLDING_BACK with a "no worries, want to hear
   more about me or tell me what's holding you back" message.
 - HOLDING_BACK: answer her specific concern warmly using the topics above
@@ -199,7 +222,7 @@ Respond with ONLY valid JSON, nothing else, in this exact shape:
   "crisis": false
 }
 Set "crisis": true ONLY for genuine self-harm/danger signals (this is a
-backup check — a stricter keyword filter already runs before you).
+backup check, a stricter keyword filter already runs before you).
 `.trim();
 
   try {
@@ -212,7 +235,7 @@ backup check — a stricter keyword filter already runs before you).
       },
       payload: JSON.stringify({
         model: AI_MODEL,
-        max_tokens: 300,
+        max_tokens: 220,
         system: systemPrompt,
         messages: [{ role: 'user', content: message }]
       }),
@@ -334,7 +357,7 @@ function appendHistoryRedacted(sheet, rowIndex, marker) {
 
 // ---- TwiML response ----
 function twiml(message) {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeXml(message)}</Message></Response>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeXml(sanitizeVoice(message))}</Message></Response>`;
   return ContentService.createTextOutput(xml).setMimeType(ContentService.MimeType.XML);
 }
 

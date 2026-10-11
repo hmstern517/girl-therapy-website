@@ -66,6 +66,18 @@ const FEELING_LEXICON = [
   'insecure', 'ashamed', 'scared', 'afraid', 'worried', 'panicked', 'empty'
 ];
 
+// Strips em/en dashes (and spaced hyphens used as dash substitutes) from any
+// outgoing text. A deterministic safety net, since this quiz content is
+// hardcoded, it mainly guards against future edits reintroducing a dash.
+function sanitizeVoice(text) {
+  if (!text) return text;
+  return String(text)
+    .replace(/\s*[—–]\s*/g, ', ')   // em dash / en dash -> comma
+    .replace(/\s+-\s+/g, ', ')      // spaced hyphen used as a dash -> comma
+    .replace(/,\s*,/g, ',')         // collapse double commas
+    .replace(/\s+,/g, ',');         // tidy stray space before comma
+}
+
 function doPost(e) {
   const payload = JSON.parse(e.postData.contents); // frontend sends JSON as text/plain to dodge CORS preflight
   const token = (payload.token || '').trim();
@@ -91,7 +103,7 @@ function doPost(e) {
       `A message in the secure intake chat (token ${token}, phone ${phone}) matched a crisis signal.\n\nMessage:\n${message}\n\nThe user was told to contact 988/911. Please follow up directly and promptly.`
     );
     return jsonOut({
-      messages: ["I'm really thankful you shared that with me. it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛"],
+      messages: [sanitizeVoice("I'm really thankful you shared that with me. it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛")],
       complete: false
     });
   }
@@ -112,7 +124,7 @@ function doPost(e) {
   }
 
   return jsonOut({
-    messages: result.messages,
+    messages: (result.messages || []).map(sanitizeVoice),
     media_url: result.mediaUrl || null,
     complete: result.nextState === 'COMPLETE'
   });
@@ -216,7 +228,7 @@ function advanceBlock2(flowState, message, row) {
       return {
         nextState: 'COMPLETE',
         updates: { contact_preference: yes ? 'Text (same number)' : message },
-        messages: ["thank you soooo much for having a heart to heart with me!!! I'll use all of this to match you with a Girl Therapist who gets you and loop back in 2 days or less. you might feel stuck now, but momentum is on its way, I'm here for you girlie ♥️"]
+        messages: ["thank you for opening up to me!! I'll match you with a Girl Therapist who gets you within 2 days. you've got this girlie ♥️"]
       };
     }
 
@@ -224,7 +236,7 @@ function advanceBlock2(flowState, message, row) {
     default:
       return {
         nextState: 'COMPLETE',
-        messages: ["you're all set 💛 our team has everything and will reach out within 2 days with your match. if anything changes before then, just text Hannah back on your phone!"]
+        messages: ["you're all set 💛 we'll reach out within 2 days with your match. text Hannah anytime if anything changes!"]
       };
   }
 }
