@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Match — Girl Therapy</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      background: #FF66C4;
+      color: #2E1F28;
+      -webkit-font-smoothing: antialiased;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 18px 20px 14px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 12.5px;
+      color: #FFF0F8;
+    }
+
+    .chat-panel {
+      flex: 1;
+      background: #FFF9F5;
+      border-radius: 28px 28px 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .bubble.bot {
+      align-self: flex-start;
+      background: #FFF2E2;
+      color: #343133;
+      border-bottom-left-radius: 4px;
+    }
+
+    .bubble.user {
+      align-self: flex-end;
+      background: #FF66C4;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble img {
+      display: block;
+      max-width: 260px;
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 6px;
+    }
+
+    .typing {
+      align-self: flex-start;
+      font-size: 13px;
+      color: #9A8A93;
+      padding: 0 16px;
+    }
+
+    form.composer {
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #F0DCE6;
+      background: #FFF9F5;
+    }
+
+    .composer input {
+      flex: 1;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 2px solid #F0DCE6;
+      font-size: 15px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      outline: none;
+    }
+
+    .composer input:focus {
+      border-color: #FF66C4;
+    }
+
+    .composer button {
+      padding: 0 22px;
+      border-radius: 999px;
+      border: none;
+      background: #FFECAD;
+      color: #2E1F28;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .composer button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error-screen {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      color: #fff;
+    }
+
+    .error-screen h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      margin: 0 0 8px;
+    }
+
+    .error-screen p {
+      font-size: 14px;
+      color: #FFF0F8;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Girl Therapy 💛</h1>
+    <p>a few quick questions so Hannah can match you</p>
+  </header>
+
+  <div class="chat-panel">
+    <div class="messages" id="messages"></div>
+    <form class="composer" id="composer">
+      <input type="text" id="composer-input" placeholder="type your answer..." autocomplete="off">
+      <button type="submit" id="composer-send">send</button>
+    </form>
+  </div>
+
+  <script>
+    // Set this to your deployed "Secure Chat" Apps Script Web App URL.
+    const CHAT_ENDPOINT = 'PASTE_YOUR_SECURE_CHAT_WEB_APP_URL_HERE';
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    const messagesEl = document.getElementById('messages');
+    const composer = document.getElementById('composer');
+    const input = document.getElementById('composer-input');
+    const sendBtn = document.getElementById('composer-send');
+
+    function addBubble(text, who, mediaUrl) {
+      const el = document.createElement('div');
+      el.className = 'bubble ' + who;
+      el.textContent = text;
+      if (mediaUrl) {
+        const img = document.createElement('img');
+        img.src = mediaUrl;
+        img.alt = '';
+        el.appendChild(img);
+      }
+      messagesEl.appendChild(el);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showError(title, body) {
+      document.querySelector('.chat-panel').innerHTML =
+        '<div class="error-screen"><div><h2>' + title + '</h2><p>' + body + '</p></div></div>';
+    }
+
+    async function sendToServer(message) {
+      // Content-Type text/plain avoids a CORS preflight against the Apps
+      // Script Web App (which can't set custom CORS headers on OPTIONS).
+      const res = await fetch(CHAT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ token, message })
+      });
+      return res.json();
+    }
+
+    async function handleResponse(data) {
+      if (data.error === 'invalid_token') {
+        showError("Hmm, this link isn't working", "Text Hannah back on your phone and ask for a fresh link — tokens are one-time-use per conversation.");
+        return;
+      }
+      if (data.error) {
+        showError('Something went wrong', 'Give it a second and try again, or text Hannah back and let her know.');
+        return;
+      }
+      (data.messages || []).forEach((m, i) => {
+        const mediaUrl = (i === (data.messages.length - 1)) ? data.media_url : null;
+        addBubble(m, 'bot', mediaUrl);
+      });
+      if (data.complete) {
+        input.disabled = true;
+        sendBtn.disabled = true;
+        input.placeholder = "you're all set!";
+      }
+    }
+
+    composer.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addBubble(text, 'user');
+      input.value = '';
+      sendBtn.disabled = true;
+      try {
+        const data = await sendToServer(text);
+        await handleResponse(data);
+      } catch (err) {
+        showError('Connection hiccup', "Check your connection and try sending that again.");
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    });
+
+    (async function init() {
+      if (!token) {
+        showError("This link is missing something", "Text HI to (844) 752-0675 to get started, and Hannah will send you a fresh link when you're ready.");
+        return;
+      }
+      if (!CHAT_ENDPOINT || CHAT_ENDPOINT.indexOf('PASTE_YOUR') === 0) {
+        showError('Almost ready', "This page hasn't been connected to its backend yet.");
+        return;
+      }
+      try {
+        const data = await sendToServer('');
+        await handleResponse(data);
+      } catch (err) {
+        showError('Connection hiccup', 'Refresh the page to try again.');
+      }
+    })();
+  </script>
+</body>
+</html>
