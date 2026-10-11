@@ -57,7 +57,7 @@ const PROPS = PropertiesService.getScriptProperties();
 const ALERT_EMAIL          = PROPS.getProperty('ALERT_EMAIL') || '';
 const AI_API_KEY           = PROPS.getProperty('AI_API_KEY') || '';
 const AI_ENABLED           = !!AI_API_KEY;
-const AI_MODEL              = 'claude-3-5-haiku-latest';
+const AI_MODEL              = 'claude-haiku-4-5';
 const SECURE_CHAT_BASE_URL = PROPS.getProperty('SECURE_CHAT_BASE_URL') || 'https://girltherapy.co/secure-chat.html';
 
 // Hard-coded, non-AI-bypassable. Expanded from the Master Flow Doc's CRISIS list.
@@ -219,6 +219,14 @@ backup check — a stricter keyword filter already runs before you).
       muteHttpExceptions: true
     });
 
+    const code = response.getResponseCode();
+    if (code !== 200) {
+      // Log status + error body (no user message content) so failures are
+      // visible in Executions instead of silently falling through forever.
+      Logger.log('callHannahAI non-200: ' + code + ' ' + response.getContentText());
+      return null;
+    }
+
     const data = JSON.parse(response.getContentText());
     const text = data && data.content && data.content[0] && data.content[0].text;
     if (!text) return null;
@@ -228,6 +236,7 @@ backup check — a stricter keyword filter already runs before you).
     if (!match) return null;
     return JSON.parse(match[0]);
   } catch (err) {
+    Logger.log('callHannahAI exception: ' + err);
     return null; // falls through to fallbackReply()
   }
 }
