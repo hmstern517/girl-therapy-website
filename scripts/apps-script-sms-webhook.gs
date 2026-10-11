@@ -276,11 +276,21 @@ function findOrCreateRow(sheet, phone) {
   const headers = data[0];
   const phoneCol = headers.indexOf('phone');
 
+  // Compare as strings — Sheets can silently store a "+1555..." value as a
+  // bare number (stripping the +) if the cell isn't explicitly text-
+  // formatted, which would otherwise break this match every time.
   for (let i = 1; i < data.length; i++) {
-    if (data[i][phoneCol] === phone) {
+    if (String(data[i][phoneCol]) === String(phone)) {
       return { row: rowToObject(headers, data[i]), rowIndex: i + 1 };
     }
   }
+
+  const newRowIndex = sheet.getLastRow() + 1;
+  // Force the phone column to plain-text format BEFORE writing, so Sheets
+  // doesn't auto-convert "+15551234567" into a number and strip the "+".
+  // (Must happen before setValues — reformatting after the fact doesn't
+  // undo the conversion, since the "+" is already gone by then.)
+  sheet.getRange(newRowIndex, phoneCol + 1).setNumberFormat('@');
 
   const newRow = headers.map(h => {
     if (h === 'phone') return phone;
@@ -288,8 +298,8 @@ function findOrCreateRow(sheet, phone) {
     if (h === 'flow_state') return 'NEW_USER';
     return '';
   });
-  sheet.appendRow(newRow);
-  return { row: rowToObject(headers, newRow), rowIndex: sheet.getLastRow() };
+  sheet.getRange(newRowIndex, 1, 1, newRow.length).setValues([newRow]);
+  return { row: rowToObject(headers, newRow), rowIndex: newRowIndex };
 }
 
 function rowToObject(headers, rowArr) {
