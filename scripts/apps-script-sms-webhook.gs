@@ -129,7 +129,7 @@ function handleCrisis(sheet, rowIndex, from, body) {
     `🚨 URGENT: possible crisis text from ${from}`,
     `A text from ${from} matched a crisis signal.\n\nMessage:\n${body}\n\nThe user was told to contact 988/911. Please follow up directly and promptly.`
   );
-  return twiml("I'm really thankful you shared that with me — it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛");
+  return twiml("I'm really thankful you shared that with me. it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛");
 }
 
 // ---- AI call — Block 1 only. Full persona + state machine from the ----
@@ -245,7 +245,7 @@ function fallbackReply(bodyLower) {
   if (/\bready\b|\bstart\b|sign me up|match me/.test(bodyLower)) {
     return "Let's do it! One sec...";
   }
-  return "hey! it's Hannah from Girl Therapy 💛 ask me anything about pricing, privacy, or how matching works — or reply READY when you want your match. (Reply HELP for help, STOP to opt out.)";
+  return "hey! it's Hannah from Girl Therapy 💛 ask me anything about pricing, privacy, or how matching works, or reply READY when you want your match. (Reply HELP for help, STOP to opt out.)";
 }
 
 // ---- Secure chat handoff ----

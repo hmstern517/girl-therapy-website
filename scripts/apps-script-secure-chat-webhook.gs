@@ -91,7 +91,7 @@ function doPost(e) {
       `A message in the secure intake chat (token ${token}, phone ${phone}) matched a crisis signal.\n\nMessage:\n${message}\n\nThe user was told to contact 988/911. Please follow up directly and promptly.`
     );
     return jsonOut({
-      messages: ["I'm really thankful you shared that with me — it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛"],
+      messages: ["I'm really thankful you shared that with me. it sounds like this is a lot to carry alone. Please text or call 988 (Suicide & Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛"],
       complete: false
     });
   }
@@ -139,7 +139,6 @@ function advanceBlock2(flowState, message, row) {
         updates: { feeling_raw: message, feeling_keyword: keyword },
         messages: [
           "thank you for sharing that with me 🫶",
-          "🚨 to protect your privacy, please save any past diagnoses, meds, or trauma specifics for your actual therapist — this is just a vibe check!",
           "do you want someone who feels like a friend, or a relationship with a bit more structure... like a coach or mentor?"
         ]
       };
