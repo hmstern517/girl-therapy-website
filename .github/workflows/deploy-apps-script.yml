@@ -45,15 +45,15 @@ jobs:
       - name: Push + deploy SMS webhook
         working-directory: appsscript/sms-webhook
         run: |
-          npx --prefix ../.. clasp push --force
-          npx --prefix ../.. clasp deploy \
+          npx --prefix .. clasp push --force
+          npx --prefix .. clasp deploy \
             -i "AKfycbx01fjhBPpz2rY3uBBQtlPyWcsG9JUnCa-n4W_9bCCICW2rhXthPrwp-mlr0ddGM5OE" \
             -d "auto-deploy ${{ github.sha }}"
 
       - name: Push + deploy secure chat webhook
         working-directory: appsscript/secure-chat-webhook
         run: |
-          npx --prefix ../.. clasp push --force
-          npx --prefix ../.. clasp deploy \
+          npx --prefix .. clasp push --force
+          npx --prefix .. clasp deploy \
             -i "AKfycbwZOBTNih7qkC26QZGt361XsNSH66-ncsbzoPedBQKuZo8cACojK4ka1Z75O3Us_N9ATg" \
             -d "auto-deploy ${{ github.sha }}"
