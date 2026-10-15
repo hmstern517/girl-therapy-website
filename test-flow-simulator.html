@@ -481,39 +481,39 @@
 
   <!-- ---- Raw source snippets, kept as inert <pre> blocks so no JS-string escaping is needed ---- -->
   <div style="display:none" id="snippetSource">
-<pre id="snip-block1-handoff">// appsscript/sms-webhook/Code.js — lines 103-111
+<pre id="snip-block1-handoff">// appsscript/sms-webhook/Code.js — lines 135-143
   // --- Intercept the transition into Block 2 (the matchmaking quiz). ---
   // The AI decides readiness; the CODE decides where that conversation
   // actually happens. It never happens over SMS.
   if (ai &amp;&amp; ai.next_state === 'BLOCK2_NAME') {
-    const reply = sendSecureChatLink(sheet, rowIndex, row);
-    setCell(sheet, rowIndex, 'flow_state', 'LINK_SENT');
-    appendHistory(sheet, rowIndex, body, reply);
+    const reply = sendSecureChatLink(sheet, rowIndex, headers, row);
+    setCell(sheet, rowIndex, headers, 'flow_state', 'LINK_SENT');
+    appendHistory(sheet, rowIndex, headers, body, reply);
     return twiml(reply);
   }
 
-// appsscript/sms-webhook/Code.js — lines 275-284
-function sendSecureChatLink(sheet, rowIndex, row) {
+// appsscript/sms-webhook/Code.js — lines 326-335
+function sendSecureChatLink(sheet, rowIndex, headers, row) {
   let token = row.intake_token;
   if (!token) {
     token = Utilities.getUuid();
-    setCell(sheet, rowIndex, 'intake_token', token);
-    setCell(sheet, rowIndex, 'intake_sent_at', new Date());
+    setCell(sheet, rowIndex, headers, 'intake_token', token);
+    setCell(sheet, rowIndex, headers, 'intake_sent_at', new Date());
   }
   const link = `${SECURE_CHAT_BASE_URL}?token=${encodeURIComponent(token)}`;
   return `yay!! here's your private match-making chat, just for you: ${link}\nit's just me (well, me + a little AI help) asking a few fun questions, takes like 5 min 💛`;
 }</pre>
-<pre id="snip-block1-crisis">// appsscript/sms-webhook/Code.js — lines 137-145
-function handleCrisis(sheet, rowIndex, from, body) {
-  setCell(sheet, rowIndex, 'human_mode', 'URGENT');
-  appendHistoryRedacted(sheet, rowIndex, '[EMERGENCY FLAG - see alert email for message content]');
+<pre id="snip-block1-crisis">// appsscript/sms-webhook/Code.js — lines 169-177
+function handleCrisis(sheet, rowIndex, headers, from, body) {
+  setCell(sheet, rowIndex, headers, 'human_mode', 'URGENT');
+  appendHistoryRedacted(sheet, rowIndex, headers, '[EMERGENCY FLAG — see alert email for message content]');
   sendAlert(
     `🚨 URGENT: possible crisis text from ${from}`,
     `A text from ${from} matched a crisis signal.\n\nMessage:\n${body}\n\nThe user was told to contact 988/911. Please follow up directly and promptly.`
   );
   return twiml("I'm really thankful you shared that with me. it sounds like this is a lot to carry alone. Please text or call 988 (Suicide &amp; Crisis Lifeline) right now, or call 911 if you're in immediate danger. I've also alerted our team to follow up with you within 24 hours. 💛");
 }</pre>
-<pre id="snip-block1-fallback">// appsscript/sms-webhook/Code.js — lines 267-272
+<pre id="snip-block1-fallback">// appsscript/sms-webhook/Code.js — lines 305-310
 function fallbackReply(bodyLower) {
   if (/\bready\b|\bstart\b|sign me up|match me/.test(bodyLower)) {
     return "Let's do it! One sec...";
@@ -524,7 +524,7 @@ function fallbackReply(bodyLower) {
 // NOTE: seeing this fallback during a Live Test usually means the AI call
 // failed or AI_API_KEY isn't set — check Apps Script Executions/Logger for
 // a "callHannahAI non-200" or "callHannahAI exception" line.</pre>
-<pre id="snip-block1-identity">// appsscript/sms-webhook/Code.js — lines 165-171 (inside the Claude system prompt)
+<pre id="snip-block1-identity">// appsscript/sms-webhook/Code.js — lines 197-203 (inside the Claude system prompt)
 IDENTITY: if she asks directly whether you're a bot, an AI, real, or human,
 be honest and warm, do not deny it. Something like "I'm an AI, trained
 personally by Hannah (the founder) so you get a caring reply right away. she
@@ -537,7 +537,7 @@ therapist, don't let it derail the conversation.
 // automation. Never break character.") that caused Hannah to flatly deny
 // being AI when asked - now she discloses honestly, in voice, and keeps
 // the conversation moving toward matching.</pre>
-<pre id="snip-block1-states">// appsscript/sms-webhook/Code.js — lines 192-212 (inside the Claude system prompt)
+<pre id="snip-block1-states">// appsscript/sms-webhook/Code.js — lines 224-250 (inside the Claude system prompt)
 STATES you can be in (track via "Current state" given to you each turn):
 - NEW_USER: first message ever. Greet warmly, ask what's on her mind.
 - AWAITING_INITIAL_CHOICE: she just got the greeting. If she shared
@@ -545,6 +545,12 @@ STATES you can be in (track via "Current state" given to you each turn):
   network+discount, ask if she wants to try it -&gt; next_state
   AWAITING_MATCHMAKING_CONFIRM. If hesitant/asking questions: offer to share
   more about yourself (voice memo or more info) -&gt; next_state HOLDING_BACK.
+  If her message has no real content (just "hi"/"hey"/a greeting again, an
+  emoji, etc., she didn't actually answer "what's on your mind"): do NOT
+  repeat the same greeting question in different words, that reads as the
+  bot restarting. Instead give her two concrete things to do next in one
+  short line, e.g. "no rush! tell me what's going on, or ask me anything
+  about how this works" -&gt; next_state stays AWAITING_INITIAL_CHOICE.
 - AWAITING_MATCHMAKING_CONFIRM: if affirmative -&gt; next_state "BLOCK2_NAME"
   (do NOT write a handoff message yourself, the system sends its own secure
   link message, just set this next_state and messages can be empty-ish).
@@ -778,11 +784,11 @@ const events = [
 
 // ---- code snippet lookup ----
 const SNIPPET_META = {
-  'block1-handoff':        { file: 'appsscript/sms-webhook/Code.js', lines: '103-111 & 275-284' },
-  'block1-crisis':         { file: 'appsscript/sms-webhook/Code.js', lines: '137-145' },
-  'block1-fallback':       { file: 'appsscript/sms-webhook/Code.js', lines: '267-272' },
-  'block1-states':         { file: 'appsscript/sms-webhook/Code.js', lines: '192-212 (system prompt)' },
-  'block1-identity':       { file: 'appsscript/sms-webhook/Code.js', lines: '165-171 (system prompt)' },
+  'block1-handoff':        { file: 'appsscript/sms-webhook/Code.js', lines: '135-143 & 326-335' },
+  'block1-crisis':         { file: 'appsscript/sms-webhook/Code.js', lines: '169-177' },
+  'block1-fallback':       { file: 'appsscript/sms-webhook/Code.js', lines: '305-310' },
+  'block1-states':         { file: 'appsscript/sms-webhook/Code.js', lines: '224-250 (system prompt)' },
+  'block1-identity':       { file: 'appsscript/sms-webhook/Code.js', lines: '197-203 (system prompt)' },
   'block2-NAME-open':      { file: 'appsscript/secure-chat-webhook/Code.js', lines: '136-140' },
   'block2-NAME-name':      { file: 'appsscript/secure-chat-webhook/Code.js', lines: '141-146' },
   'block2-FEELING':        { file: 'appsscript/secure-chat-webhook/Code.js', lines: '147-157' },
