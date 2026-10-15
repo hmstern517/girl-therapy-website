@@ -71,13 +71,19 @@ const AI_MODEL              = 'claude-haiku-4-5';
 const SECURE_CHAT_BASE_URL = PROPS.getProperty('SECURE_CHAT_BASE_URL') || 'https://girltherapy.co/secure-chat.html';
 const GIRL_THERAPY_VCARD_URL = PROPS.getProperty('GIRL_THERAPY_VCARD_URL') || 'https://girltherapy.co/assets/girltherapy.vcf';
 
-// First-ever text from a number gets this, verbatim, no AI involved — a
-// contact card so Girl Therapy doesn't get lost as an unknown number, plus
-// one generic (not AI-personalized) greeting. Her actual message still
-// gets a real reply on her next text, once the state machine picks up from
-// AWAITING_INITIAL_CHOICE below.
-const WELCOME_CARD_CAPTION = "saving us as a contact so I don't get lost in your messages 📇";
-const GENERAL_GREETING = "hey! it's Hannah, founder of Girl Therapy 💛 I personally match you with a licensed therapist who actually fits, no overwhelm, no guessing. it's free to get matched, plus a discount on your first session. what's on your mind today? (Reply HELP for help, STOP to opt out.)";
+// First-ever text from a number gets this sequence, verbatim, no AI
+// involved — broken into separate texts on purpose so it reads like a
+// person texting in real time instead of one dense auto-reply block. Her
+// actual message still gets a real reply on her next text, once the state
+// machine picks up from AWAITING_INITIAL_CHOICE below.
+//
+// Compliance note: STOP/HELP opt-out language is legally required (TCPA +
+// CTIA messaging guidelines) and must appear in this first automated
+// message a number ever receives. It's folded into WELCOME_TEXT_4 below
+// rather than its own text so the sequence still reads human.
+const WELCOME_TEXT_1 = "hey girlie! it's Hannah from Girl Therapy 🫶";
+const WELCOME_TEXT_2 = "I'm so grateful you texted... definitely save my contact so I don't get lost in your messages";
+const WELCOME_TEXT_4 = "want to tell me what's on your mind? (Reply HELP for help, STOP to opt out.)";
 
 // Hard-coded, non-AI-bypassable. Expanded from the Master Flow Doc's CRISIS list.
 const CRISIS_KEYWORDS = [
@@ -306,11 +312,13 @@ function fallbackReply(bodyLower) {
 // ---- Welcome flow: contact card + general greeting for brand-new numbers ----
 function sendWelcomeCard(sheet, rowIndex, headers, incomingBody) {
   const reply = [
-    { body: WELCOME_CARD_CAPTION, media: GIRL_THERAPY_VCARD_URL },
-    { body: GENERAL_GREETING }
+    { body: WELCOME_TEXT_1 },
+    { body: WELCOME_TEXT_2 },
+    { media: GIRL_THERAPY_VCARD_URL },
+    { body: WELCOME_TEXT_4 }
   ];
   setCell(sheet, rowIndex, headers, 'flow_state', 'AWAITING_INITIAL_CHOICE');
-  appendHistory(sheet, rowIndex, headers, incomingBody, `[contact card sent] ${WELCOME_CARD_CAPTION} || ${GENERAL_GREETING}`);
+  appendHistory(sheet, rowIndex, headers, incomingBody, `[welcome sequence sent] ${WELCOME_TEXT_1} || ${WELCOME_TEXT_2} || [vcard] || ${WELCOME_TEXT_4}`);
   return twiml(reply);
 }
 
