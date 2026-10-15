@@ -66,6 +66,20 @@ const FEELING_LEXICON = [
   'insecure', 'ashamed', 'scared', 'afraid', 'worried', 'panicked', 'empty'
 ];
 
+// Transition bubble bridging her feeling-share to the style question, so the
+// jump to "do you want a friend or a coach" doesn't feel abrupt. Picked at
+// random for variety across sessions, rather than repeating the same line.
+const THERAPIST_TRANSITION_LINES = [
+  "the right therapist can relieve some of that pressure",
+  "the right therapist can give you a new perspective",
+  "the right therapist can shift that energy",
+  "the right therapist can take some of that weight off"
+];
+
+function pickTherapistTransitionLine() {
+  return THERAPIST_TRANSITION_LINES[Math.floor(Math.random() * THERAPIST_TRANSITION_LINES.length)];
+}
+
 // Strips em/en dashes (and spaced hyphens used as dash substitutes) from any
 // outgoing text. A deterministic safety net, since this quiz content is
 // hardcoded, it mainly guards against future edits reintroducing a dash.
@@ -151,6 +165,7 @@ function advanceBlock2(flowState, message, row) {
         updates: { feeling_raw: message, feeling_keyword: keyword },
         messages: [
           "thank you for sharing that with me 🫶",
+          pickTherapistTransitionLine(),
           "do you want someone who feels like a friend, or a relationship with a bit more structure... like a coach or mentor?"
         ]
       };
