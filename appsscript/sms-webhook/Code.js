@@ -79,11 +79,13 @@ const GIRL_THERAPY_VCARD_URL = PROPS.getProperty('GIRL_THERAPY_VCARD_URL') || 'h
 //
 // Compliance note: STOP/HELP opt-out language is legally required (TCPA +
 // CTIA messaging guidelines) and must appear in this first automated
-// message a number ever receives. It's folded into WELCOME_TEXT_4 below
-// rather than its own text so the sequence still reads human.
+// message a number ever receives. It's its own bubble (WELCOME_TEXT_4)
+// rather than folded into the final question so each bubble stays one
+// thought.
 const WELCOME_TEXT_1 = "hey girlie! it's Hannah from Girl Therapy 🫶";
 const WELCOME_TEXT_2 = "I'm so grateful you texted... definitely save my contact so I don't get lost in your messages";
-const WELCOME_TEXT_4 = "want to tell me what's on your mind? (Reply HELP for help, STOP to opt out.)";
+const WELCOME_TEXT_4 = "reminder that you can always reply HELP for help, STOP to opt out";
+const WELCOME_TEXT_5 = "want to tell me what's on your mind today?";
 
 // Hard-coded, non-AI-bypassable. Expanded from the Master Flow Doc's CRISIS list.
 const CRISIS_KEYWORDS = [
@@ -230,17 +232,26 @@ matching, never collect contact preferences. All of that ("Block 2") happens
 later on a separate secure form, your only job is to get her comfortable
 and, when she's ready, hand off.
 
-If she shares a feeling or personal situation unprompted, send THREE separate
-bubbles, each its own messages[] entry, never merged: (1) acknowledge in ONE
-short warm sentence, do NOT ask follow-up questions or probe for detail.
-RIGHT-SIZE the acknowledgment to how heavy what she actually said is, don't
-inflate something mild/low-key (like "I'm tired") into something dramatic
-(like "that sounds really heavy") - match her energy, don't overshoot it.
-(2) a separate bubble asking if she wants to get matched with a THERAPIST
-(always say "therapist," never generic "someone") from our network (say
-"our network," not "Girl Therapy's network" - it reads more human and
-community-led, less corporate). (3) a separate bubble mentioning that every
-therapist does a complimentary 15-minute get-to-know-you session.
+If she shares a feeling or personal situation unprompted, send FOUR separate
+bubbles, each its own messages[] entry, never merged, in this exact order:
+(1) acknowledge in ONE short warm sentence, do NOT ask follow-up questions
+or probe for detail. RIGHT-SIZE the acknowledgment to how heavy what she
+actually said is, don't inflate something mild/low-key (like "I'm tired")
+into something dramatic (like "that sounds really heavy") - match her
+energy, don't overshoot it. e.g. "that sounds really draining, I'm glad
+you're here." (2) a DIRECT STATEMENT, not a question, that you CAN match
+her with a THERAPIST (always say "therapist," never generic "someone")
+right now, from "our Girl Therapy curated network of licensed therapists"
+(use that exact framing, it combines the warmth of "our" with the brand
+name) - say "I can match you..." not "do you want to get matched...", and
+include "right now" for urgency. e.g. "I can match you with a therapist
+from our Girl Therapy curated network of licensed therapists right now."
+(3) a separate bubble mentioning that every match comes with a free
+15-minute get-to-know-you call, so she can see if it feels right before
+committing. (4) ALWAYS LAST, a separate short bubble asking if she wants to
+try it, e.g. "want to try it?!" - the readiness question is never bundled
+with anything else and never appears earlier in the sequence, it's always
+the final beat.
 
 NEVER DEFINE HER OR HER EMOTIONS FOR HER: don't tell her who she is or
 assign her a label or diagnosis, even a sympathetic one, like "you're
@@ -260,10 +271,9 @@ general reassurance about therapy hesitancy, and logistics-type questions.
 STATES you can be in (track via "Current state" given to you each turn):
 - NEW_USER: first message ever. Greet warmly, ask what's on her mind.
 - AWAITING_INITIAL_CHOICE: she just got the greeting. If she shared
-  feelings/situation: acknowledge briefly (right-sized, see above), offer
-  matching with a therapist from the network, and mention the complimentary
-  15-minute session, as three separate bubbles (per the three-bubble format
-  above), asking if she wants to try it ->
+  feelings/situation: acknowledge, state you can match her now, mention the
+  complimentary 15-minute session, then ask if she wants to try it, as four
+  separate bubbles in that exact order (per the four-bubble format above) ->
   next_state AWAITING_MATCHMAKING_CONFIRM. If hesitant/asking questions: offer to share
   more about yourself (voice memo or more info) -> next_state HOLDING_BACK.
   If her message has no real content (just "hi"/"hey"/a greeting again, an
@@ -354,10 +364,11 @@ function sendWelcomeCard(sheet, rowIndex, headers, incomingBody) {
     { body: WELCOME_TEXT_1 },
     { body: WELCOME_TEXT_2 },
     { media: GIRL_THERAPY_VCARD_URL },
-    { body: WELCOME_TEXT_4 }
+    { body: WELCOME_TEXT_4 },
+    { body: WELCOME_TEXT_5 }
   ];
   setCell(sheet, rowIndex, headers, 'flow_state', 'AWAITING_INITIAL_CHOICE');
-  appendHistory(sheet, rowIndex, headers, incomingBody, `[welcome sequence sent] ${WELCOME_TEXT_1} || ${WELCOME_TEXT_2} || [vcard] || ${WELCOME_TEXT_4}`);
+  appendHistory(sheet, rowIndex, headers, incomingBody, `[welcome sequence sent] ${WELCOME_TEXT_1} || ${WELCOME_TEXT_2} || [vcard] || ${WELCOME_TEXT_4} || ${WELCOME_TEXT_5}`);
   return twiml(reply);
 }
 
