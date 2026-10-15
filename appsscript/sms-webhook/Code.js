@@ -143,13 +143,17 @@ function doPost(e) {
   }
 
   // --- Normal Block 1 reply ---
-  const reply = ai
-    ? (ai.messages || []).join('\n\n')
-    : fallbackReply(bodyLower);
+  // ai.messages is an array of separate bubbles (the prompt sometimes asks
+  // for two, e.g. acknowledgment + the complimentary-session mention) — send
+  // each as its own TwiML <Message> so they land as separate texts, same as
+  // the welcome sequence, instead of one bubble with a blank line in it.
+  const messages = (ai && ai.messages && ai.messages.length) ? ai.messages : [fallbackReply(bodyLower)];
+  const reply = messages.map(m => ({ body: m }));
+  const replyLog = messages.join('\n\n'); // flattened just for the Sheet history column
   const nextState = (ai && ai.next_state) || flowState;
 
   setCell(sheet, rowIndex, headers, 'flow_state', nextState);
-  appendHistory(sheet, rowIndex, headers, body, reply);
+  appendHistory(sheet, rowIndex, headers, body, replyLog);
 
   return twiml(reply);
 }
