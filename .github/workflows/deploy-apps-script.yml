@@ -1,0 +1,59 @@
+name: Deploy Apps Script
+
+# Pushes the latest .gs code straight to the live Girl Therapy Apps Script
+# Web Apps whenever appsscript/** changes on main — no manual copy/paste
+# into script.google.com, no clicking through "Manage deployments."
+#
+# clasp deploys to the SAME existing deployment ID each project already
+# has, so the live /exec URLs (the ones Twilio and secure-chat.html point
+# to) never change. This just updates what code answers those URLs.
+#
+# One-time setup already done (see CLASP_CREDENTIALS secret in repo
+# settings): `clasp login` was run locally and the resulting
+# ~/.clasprc.json was pushed to this secret via `gh secret set`. If that
+# credential ever expires/is revoked, redo that locally and re-run:
+#   gh secret set CLASP_CREDENTIALS --repo hmstern517/girl-therapy-website < ~/.clasprc.json
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'appsscript/**'
+      - '.github/workflows/deploy-apps-script.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install clasp
+        working-directory: appsscript
+        run: npm ci
+
+      - name: Write clasp credentials
+        run: printf '%s' "$CLASP_CREDENTIALS" > "$HOME/.clasprc.json"
+        env:
+          CLASP_CREDENTIALS: ${{ secrets.CLASP_CREDENTIALS }}
+
+      - name: Push + deploy SMS webhook
+        working-directory: appsscript/sms-webhook
+        run: |
+          npx --prefix ../.. clasp push --force
+          npx --prefix ../.. clasp deploy \
+            -i "AKfycbx01fjhBPpz2rY3uBBQtlPyWcsG9JUnCa-n4W_9bCCICW2rhXthPrwp-mlr0ddGM5OE" \
+            -d "auto-deploy ${{ github.sha }}"
+
+      - name: Push + deploy secure chat webhook
+        working-directory: appsscript/secure-chat-webhook
+        run: |
+          npx --prefix ../.. clasp push --force
+          npx --prefix ../.. clasp deploy \
+            -i "AKfycbwZOBTNih7qkC26QZGt361XsNSH66-ncsbzoPedBQKuZo8cACojK4ka1Z75O3Us_N9ATg" \
+            -d "auto-deploy ${{ github.sha }}"

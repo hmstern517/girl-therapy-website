@@ -1,0 +1,8 @@
+{
+  "name": "girl-therapy-appsscript",
+  "private": true,
+  "description": "clasp-managed Apps Script projects for girltherapy.co (SMS bot, secure chat quiz, form handler). Pushed and deployed automatically by .github/workflows/deploy-apps-script.yml on every push to main.",
+  "devDependencies": {
+    "@google/clasp": "^3.4.1"
+  }
+}

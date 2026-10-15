@@ -1,3 +1,9 @@
 .DS_Store
 node_modules/
 *.log
+
+# clasp OAuth credentials — must never be committed. clasp stores these in
+# $HOME/.clasprc.json by default (outside the repo entirely), but this is a
+# defensive backstop in case anyone ever runs `clasp login --creds` locally.
+.clasprc.json
+appsscript/.clasprc.json

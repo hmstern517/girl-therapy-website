@@ -26,6 +26,10 @@
  *      AI_API_KEY           = (your Anthropic API key — get AI replies)
  *      SECURE_CHAT_BASE_URL = https://girltherapy.co/secure-chat.html
  *        (optional — this is already the default below)
+ *      GIRL_THERAPY_VCARD_URL = https://girltherapy.co/assets/girltherapy.vcf
+ *        (optional — this is already the default below. The .vcf file lives
+ *        at girl-therapy-website/assets/girltherapy.vcf — commit + push it
+ *        so GitHub Pages actually serves it before relying on this.)
  * 5. Deploy → New deployment → Web app → Execute as "Me" → Anyone → Deploy.
  * 6. Twilio Console → your number → Messaging → "A message comes in" →
  *    paste the Web App URL → method POST.
@@ -48,6 +52,12 @@
  *   to acknowledge in one line WITHOUT probing for detail and pivot
  *   immediately to the matching offer, which limits (but doesn't zero
  *   out) how much sensitive content lands in SMS/AI logs.
+ * - vCard delivery depends on the hosting server sending the right
+ *   Content-Type (text/vcard) for girltherapy.vcf. GitHub Pages infers it
+ *   from the file extension and should get this right, but verify once
+ *   live with `curl -I https://girltherapy.co/assets/girltherapy.vcf`. If
+ *   a carrier doesn't render it as a tappable "Add Contact" card, it still
+ *   arrives as a plain file attachment, which is a harmless degradation.
  */
 
 const SHEET_ID = '1d1ojy0yAYsc788-JP4tIMNSD-6-7T0VTtWvXbfOR38M';
@@ -59,6 +69,15 @@ const AI_API_KEY           = PROPS.getProperty('AI_API_KEY') || '';
 const AI_ENABLED           = !!AI_API_KEY;
 const AI_MODEL              = 'claude-haiku-4-5';
 const SECURE_CHAT_BASE_URL = PROPS.getProperty('SECURE_CHAT_BASE_URL') || 'https://girltherapy.co/secure-chat.html';
+const GIRL_THERAPY_VCARD_URL = PROPS.getProperty('GIRL_THERAPY_VCARD_URL') || 'https://girltherapy.co/assets/girltherapy.vcf';
+
+// First-ever text from a number gets this, verbatim, no AI involved — a
+// contact card so Girl Therapy doesn't get lost as an unknown number, plus
+// one generic (not AI-personalized) greeting. Her actual message still
+// gets a real reply on her next text, once the state machine picks up from
+// AWAITING_INITIAL_CHOICE below.
+const WELCOME_CARD_CAPTION = "saving us as a contact so I don't get lost in your messages 📇";
+const GENERAL_GREETING = "hey! it's Hannah, founder of Girl Therapy 💛 I personally match you with a licensed therapist who actually fits, no overwhelm, no guessing. it's free to get matched, plus a discount on your first session. what's on your mind today? (Reply HELP for help, STOP to opt out.)";
 
 // Hard-coded, non-AI-bypassable. Expanded from the Master Flow Doc's CRISIS list.
 const CRISIS_KEYWORDS = [
@@ -76,11 +95,18 @@ function doPost(e) {
   const bodyLower = ' ' + body.toLowerCase() + ' ';
 
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(TAB_NAME);
-  const { row, rowIndex } = findOrCreateRow(sheet, from);
+  const { row, rowIndex, isNew, headers } = findOrCreateRow(sheet, from);
 
-  // --- Rule-based safety gate FIRST. AI never sees this turn if it hits. ---
+  // --- Rule-based safety gate FIRST. AI never sees this turn if it hits,
+  // and neither does the welcome card below — safety always wins. ---
   if (CRISIS_KEYWORDS.some(k => bodyLower.includes(k))) {
-    return handleCrisis(sheet, rowIndex, from, body);
+    return handleCrisis(sheet, rowIndex, headers, from, body);
+  }
+
+  // --- First part of the welcome logic: brand-new number gets the contact
+  // card + a general greeting, deterministically, before AI touches it. ---
+  if (isNew) {
+    return sendWelcomeCard(sheet, rowIndex, headers, body);
   }
 
   const flowState = row.flow_state || 'NEW_USER';
@@ -89,11 +115,11 @@ function doPost(e) {
   // AI's own crisis flag is a SECOND layer on top of the keyword gate above
   // (defense in depth) — never the only layer.
   if (ai && ai.crisis) {
-    return handleCrisis(sheet, rowIndex, from, body);
+    return handleCrisis(sheet, rowIndex, headers, from, body);
   }
 
   if (ai && ai.human_handoff) {
-    setCell(sheet, rowIndex, 'human_mode', 'TRUE');
+    setCell(sheet, rowIndex, headers, 'human_mode', 'TRUE');
     sendAlert(
       `Girl Therapy SMS: human follow-up suggested (${from})`,
       `Hannah's AI flagged this conversation for human follow-up.\n\nLatest message:\n${body}\n\nNot urgent — just make sure someone checks in.`
@@ -104,9 +130,9 @@ function doPost(e) {
   // The AI decides readiness; the CODE decides where that conversation
   // actually happens. It never happens over SMS.
   if (ai && ai.next_state === 'BLOCK2_NAME') {
-    const reply = sendSecureChatLink(sheet, rowIndex, row);
-    setCell(sheet, rowIndex, 'flow_state', 'LINK_SENT');
-    appendHistory(sheet, rowIndex, body, reply);
+    const reply = sendSecureChatLink(sheet, rowIndex, headers, row);
+    setCell(sheet, rowIndex, headers, 'flow_state', 'LINK_SENT');
+    appendHistory(sheet, rowIndex, headers, body, reply);
     return twiml(reply);
   }
 
@@ -116,8 +142,8 @@ function doPost(e) {
     : fallbackReply(bodyLower);
   const nextState = (ai && ai.next_state) || flowState;
 
-  setCell(sheet, rowIndex, 'flow_state', nextState);
-  appendHistory(sheet, rowIndex, body, reply);
+  setCell(sheet, rowIndex, headers, 'flow_state', nextState);
+  appendHistory(sheet, rowIndex, headers, body, reply);
 
   return twiml(reply);
 }
@@ -134,9 +160,9 @@ function sanitizeVoice(text) {
     .replace(/\s+,/g, ',');         // tidy stray space before comma
 }
 
-function handleCrisis(sheet, rowIndex, from, body) {
-  setCell(sheet, rowIndex, 'human_mode', 'URGENT');
-  appendHistoryRedacted(sheet, rowIndex, '[EMERGENCY FLAG — see alert email for message content]');
+function handleCrisis(sheet, rowIndex, headers, from, body) {
+  setCell(sheet, rowIndex, headers, 'human_mode', 'URGENT');
+  appendHistoryRedacted(sheet, rowIndex, headers, '[EMERGENCY FLAG — see alert email for message content]');
   sendAlert(
     `🚨 URGENT: possible crisis text from ${from}`,
     `A text from ${from} matched a crisis signal.\n\nMessage:\n${body}\n\nThe user was told to contact 988/911. Please follow up directly and promptly.`
@@ -196,6 +222,12 @@ STATES you can be in (track via "Current state" given to you each turn):
   network+discount, ask if she wants to try it -> next_state
   AWAITING_MATCHMAKING_CONFIRM. If hesitant/asking questions: offer to share
   more about yourself (voice memo or more info) -> next_state HOLDING_BACK.
+  If her message has no real content (just "hi"/"hey"/a greeting again, an
+  emoji, etc., she didn't actually answer "what's on your mind"): do NOT
+  repeat the same greeting question in different words, that reads as the
+  bot restarting. Instead give her two concrete things to do next in one
+  short line, e.g. "no rush! tell me what's going on, or ask me anything
+  about how this works" -> next_state stays AWAITING_INITIAL_CHOICE.
 - AWAITING_MATCHMAKING_CONFIRM: if affirmative -> next_state "BLOCK2_NAME"
   (do NOT write a handoff message yourself, the system sends its own secure
   link message, just set this next_state and messages can be empty-ish).
@@ -271,13 +303,24 @@ function fallbackReply(bodyLower) {
   return "hey! it's Hannah from Girl Therapy 💛 ask me anything about pricing, privacy, or how matching works, or reply READY when you want your match. (Reply HELP for help, STOP to opt out.)";
 }
 
+// ---- Welcome flow: contact card + general greeting for brand-new numbers ----
+function sendWelcomeCard(sheet, rowIndex, headers, incomingBody) {
+  const reply = [
+    { body: WELCOME_CARD_CAPTION, media: GIRL_THERAPY_VCARD_URL },
+    { body: GENERAL_GREETING }
+  ];
+  setCell(sheet, rowIndex, headers, 'flow_state', 'AWAITING_INITIAL_CHOICE');
+  appendHistory(sheet, rowIndex, headers, incomingBody, `[contact card sent] ${WELCOME_CARD_CAPTION} || ${GENERAL_GREETING}`);
+  return twiml(reply);
+}
+
 // ---- Secure chat handoff ----
-function sendSecureChatLink(sheet, rowIndex, row) {
+function sendSecureChatLink(sheet, rowIndex, headers, row) {
   let token = row.intake_token;
   if (!token) {
     token = Utilities.getUuid();
-    setCell(sheet, rowIndex, 'intake_token', token);
-    setCell(sheet, rowIndex, 'intake_sent_at', new Date());
+    setCell(sheet, rowIndex, headers, 'intake_token', token);
+    setCell(sheet, rowIndex, headers, 'intake_sent_at', new Date());
   }
   const link = `${SECURE_CHAT_BASE_URL}?token=${encodeURIComponent(token)}`;
   return `yay!! here's your private match-making chat, just for you: ${link}\nit's just me (well, me + a little AI help) asking a few fun questions, takes like 5 min 💛`;
@@ -304,7 +347,7 @@ function findOrCreateRow(sheet, phone) {
   // formatted, which would otherwise break this match every time.
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][phoneCol]) === String(phone)) {
-      return { row: rowToObject(headers, data[i]), rowIndex: i + 1 };
+      return { row: rowToObject(headers, data[i]), rowIndex: i + 1, isNew: false, headers };
     }
   }
 
@@ -322,7 +365,7 @@ function findOrCreateRow(sheet, phone) {
     return '';
   });
   sheet.getRange(newRowIndex, 1, 1, newRow.length).setValues([newRow]);
-  return { row: rowToObject(headers, newRow), rowIndex: newRowIndex };
+  return { row: rowToObject(headers, newRow), rowIndex: newRowIndex, isNew: true, headers };
 }
 
 function rowToObject(headers, rowArr) {
@@ -331,14 +374,16 @@ function rowToObject(headers, rowArr) {
   return obj;
 }
 
-function setCell(sheet, rowIndex, columnName, value) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+// headers is passed in from the single read already done in findOrCreateRow
+// for this request, instead of each of these re-fetching row 1 on its own
+// (that redundant round trip to the Sheets backend was adding real latency
+// to every single text, several times over, on top of the AI call itself).
+function setCell(sheet, rowIndex, headers, columnName, value) {
   const col = headers.indexOf(columnName) + 1;
   if (col > 0) sheet.getRange(rowIndex, col).setValue(value);
 }
 
-function appendHistory(sheet, rowIndex, incoming, outgoing) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+function appendHistory(sheet, rowIndex, headers, incoming, outgoing) {
   const col = headers.indexOf('history') + 1;
   const cell = sheet.getRange(rowIndex, col);
   const existing = cell.getValue() || '';
@@ -346,8 +391,7 @@ function appendHistory(sheet, rowIndex, incoming, outgoing) {
   cell.setValue(`${existing}\n[${stamp}] IN: ${incoming}\n[${stamp}] OUT: ${outgoing}`.trim());
 }
 
-function appendHistoryRedacted(sheet, rowIndex, marker) {
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+function appendHistoryRedacted(sheet, rowIndex, headers, marker) {
   const col = headers.indexOf('history') + 1;
   const cell = sheet.getRange(rowIndex, col);
   const existing = cell.getValue() || '';
@@ -356,9 +400,19 @@ function appendHistoryRedacted(sheet, rowIndex, marker) {
 }
 
 // ---- TwiML response ----
-function twiml(message) {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>${escapeXml(sanitizeVoice(message))}</Message></Response>`;
+// Accepts either a single reply string (existing call sites) or an array of
+// { body, media } parts to send as separate SMS/MMS bubbles in one reply.
+function twiml(input) {
+  const parts = Array.isArray(input) ? input : [{ body: input }];
+  const messages = parts.map(messageXml).join('');
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><Response>${messages}</Response>`;
   return ContentService.createTextOutput(xml).setMimeType(ContentService.MimeType.XML);
+}
+
+function messageXml(part) {
+  const body = part.body ? `<Body>${escapeXml(sanitizeVoice(part.body))}</Body>` : '';
+  const media = part.media ? `<Media>${escapeXml(part.media)}</Media>` : '';
+  return `<Message>${body}${media}</Message>`;
 }
 
 function escapeXml(str) {
