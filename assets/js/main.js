@@ -57,8 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Forms can use either pattern:
   //  - data-placeholder-form + .form__status (older multi-section pages)
-  //  - data-form-type + data-wl-form / data-wl-success / data-wl-error (coming-soon hero)
-  document.querySelectorAll('[data-placeholder-form], #waitlist-form').forEach((form) => {
+  //  - data-form-type + data-wl-success / data-wl-error (optional inline success/error blocks)
+  // On success every form also dispatches a 'waitlist:success' event for page-level UI (e.g. popups).
+  document.querySelectorAll('[data-placeholder-form], #waitlist-form, #waitlist-form-email').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -69,8 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const status = form.querySelector('.form__status');
       const successMessage = form.dataset.successMessage || "Thanks! We'll be in touch soon.";
 
-      // Pattern B: success/error blocks + form-fields container
-      const fieldsBlock = form.querySelector('[data-wl-form]');
+      // Pattern B: success/error blocks (coming-soon hero uses a popup instead)
       const successBlock = form.querySelector('[data-wl-success]');
       const errorBlock = form.querySelector('[data-wl-error]');
 
@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
           status.textContent = successMessage;
           status.classList.add('is-visible');
         }
-        if (fieldsBlock) fieldsBlock.style.display = 'none';
         if (successBlock) successBlock.classList.add('is-visible');
         if (errorBlock) errorBlock.classList.remove('is-visible');
       };
@@ -98,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!FORM_ENDPOINT) {
         showSuccess();
         form.reset();
+        form.dispatchEvent(new CustomEvent('waitlist:success'));
         return;
       }
 
@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // the Apps Script execution log for debugging.
         showSuccess();
         form.reset();
+        form.dispatchEvent(new CustomEvent('waitlist:success'));
       } catch (err) {
         showError();
         if (submitBtn) submitBtn.disabled = false;
