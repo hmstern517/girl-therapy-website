@@ -1,7 +1,7 @@
-# Girl Therapy — girltherapy.org
+# Girl Therapy — girltherapy.co
 
 "Coming soon" waitlist landing page for Girl Therapy, a telehealth therapy
-platform built exclusively for women, by women. Operated by Finally Therapy, LLC.
+platform built exclusively for women, by women. Girl Therapy is a dba of HJS Capital.
 
 ## Stack
 

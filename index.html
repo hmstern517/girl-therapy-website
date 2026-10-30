@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <!-- v2.4 -->
   <title>Girl Therapy — Coming Soon</title>
-  <meta name="description" content="Therapy is about to get a glow up. Girl Therapy is a telehealth platform built exclusively for women, by women. Join the waitlist to try it before anyone else.">
+  <meta name="description" content="Therapy is about to get a glow up. Girl Therapy is a telehealth platform built exclusively for women, by women. Text HI to (844) 752-0675 to join the waitlist and try it before anyone else.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23FF66C4'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23FFECAD' font-family='Arial, sans-serif' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,203 +73,84 @@
       color: #FFF0F8;
     }
 
-    /* ===== Form ===== */
-    form {
-      margin: clamp(18px, 2.5vw, 32px) auto 0;
-      max-width: 520px;
+    /* ===== CTA ===== */
+    .cta-wrap {
+      margin: clamp(22px, 3vw, 34px) auto 0;
+      max-width: 560px;
     }
 
-    .form-fields {
-      display: flex;
-      flex-direction: column;
+    .cta-button,
+    .cta-plain {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    input[type="tel"],
-    input[type="email"],
-    input[type="text"] {
-      width: 100%;
-      padding: 16px 24px;
-      border-radius: 999px;
-      border: 2px solid #fff;
-      font-size: 16px;
-      font-family: 'Hanken Grotesk', sans-serif;
-      color: #2E1F28;
-      background: #fff;
-      outline: none;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-
-    input:focus {
-      border-color: #FFECAD;
-      box-shadow: 0 0 0 4px rgba(255, 236, 173, 0.45);
-    }
-
-    input::placeholder {
-      color: #B8A8B2;
-    }
-
-    /* Consent rows */
-    .consent-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      text-align: left;
-      padding: 2px 4px;
-      font-size: 13.5px;
-      line-height: 1.5;
-      color: #FFF0F8;
-    }
-
-    .consent-row input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      margin: 0.1em 0 0;
-      accent-color: #FFECAD;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .consent-row label {
-      cursor: pointer;
-    }
-
-    /* Consent shake animation */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%       { transform: translateX(-8px); }
-      40%       { transform: translateX(8px); }
-      60%       { transform: translateX(-6px); }
-      80%       { transform: translateX(6px); }
-    }
-
-    .consent-row.shake {
-      animation: shake 0.45s ease;
-    }
-
-    .consent-row.highlight-required label {
-      color: #FFECAD;
-      font-weight: 700;
-    }
-
-    .consent-row.highlight-required input[type="checkbox"] {
-      outline: 2px solid #FFECAD;
-      outline-offset: 2px;
-    }
-
-    /* Submit */
-    button[type="submit"] {
-      margin-top: 2px;
-      padding: 16px 32px;
-      border-radius: 999px;
-      border: none;
       background: #FFECAD;
       color: #2E1F28;
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      font-size: 17px;
+      font-size: clamp(17px, 2.2vw, 20px);
       letter-spacing: -0.01em;
-      cursor: pointer;
+      padding: 18px 30px;
+      border-radius: 999px;
+      text-decoration: none;
       box-shadow: 0 16px 34px -14px rgba(255, 236, 173, 0.9);
       transition: transform 0.2s, box-shadow 0.2s;
       white-space: nowrap;
-      width: 100%;
     }
 
-    button[type="submit"]:hover {
+    .cta-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 22px 40px -12px rgba(255, 236, 173, 0.95);
     }
 
-    button[type="submit"]:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
+    .cta-plain {
+      cursor: default;
+      box-shadow: none;
     }
 
-    /* Micro */
-    .micro {
+    /* Mobile gets the tappable sms: link; desktop gets plain text */
+    .cta-mobile { display: none; }
+    .cta-desktop { display: inline-flex; }
+
+    @media (max-width: 680px) {
+      .cta-mobile { display: inline-flex; }
+      .cta-desktop { display: none; }
+    }
+
+    /* ===== Required SMS disclosure ===== */
+    .disclosure {
       margin: 18px auto 0;
-      font-size: 12px;
-      color: #FFD7EC;
-      opacity: 0.8;
+      max-width: 520px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #FFF0F8;
     }
 
-    .micro a.email-link {
+    .disclosure a {
+      color: #fff;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* ===== Footer ===== */
+    .site-footer {
+      margin: clamp(26px, 4vw, 40px) auto 0;
+      padding-top: clamp(16px, 3vw, 24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      max-width: 560px;
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: #FFD7EC;
+    }
+
+    .site-footer a {
+      color: #fff;
       text-decoration: underline;
     }
 
-    /* ===== Modals ===== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(46, 31, 40, 0.55);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      z-index: 10;
-    }
-
-    .modal-overlay.is-open {
-      display: flex;
-    }
-
-    .modal {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      background: #fff;
-      border-radius: 20px;
-      padding: 32px 28px;
-      text-align: center;
-      color: #2E1F28;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: transparent;
-      color: #2E1F28;
-      font-size: 22px;
-      line-height: 1;
-      cursor: pointer;
-      opacity: 0.6;
-    }
-
-    .modal-close:hover {
-      opacity: 1;
-    }
-
-    .modal-prompt {
-      margin: 0 0 18px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: -0.01em;
-    }
-
-    .modal form {
-      margin: 0;
-      max-width: none;
-    }
-
-    .modal .input-wrap {
-      margin-bottom: 10px;
-    }
-
-    .modal--thanks .modal-prompt {
-      margin-bottom: 0;
-      font-size: 20px;
+    .site-footer p {
+      margin: 4px 0;
     }
   </style>
 </head>
@@ -285,124 +163,26 @@
 
       <p class="hero__sub">Join the waitlist to try it before anyone else</p>
 
-      <form id="waitlist-form" data-form-type="waitlist">
-        <div class="form-fields">
+      <div class="cta-wrap">
+        <a class="cta-button cta-mobile" href="sms:+18447520675">Text HI to (844) 752-0675</a>
+        <span class="cta-plain cta-desktop">Text HI to (844) 752-0675</span>
 
-          <div class="input-wrap">
-            <input type="tel" id="wl-input" name="phone" required
-              placeholder="your phone number"
-              autocomplete="tel" inputmode="tel">
-          </div>
+        <p class="disclosure">
+          By texting HI to (844) 752-0675, you agree to receive text messages from Girl Therapy (HJS Capital) about our waitlist and launch. Message frequency varies. Msg and data rates may apply. Reply STOP to cancel, HELP for help. Consent is not a condition of purchase.
+          <br><br>
+          <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
+        </p>
+      </div>
 
-          <button type="submit">join the waitlist</button>
-
-          <!-- SMS consent (required) -->
-          <div class="consent-row" id="sms-consent-row">
-            <input type="checkbox" id="wl-consent" name="smsConsent" required>
-            <label for="wl-consent">Text me when Girl Therapy officially launches. Message &amp; data rates may apply. Promise we won't spam you. Reply STOP to opt out.</label>
-          </div>
-        </div>
-      </form>
-
-      <p class="micro"><a href="#" id="email-toggle-link" class="email-link" style="color: inherit;">Rather give us your email? Click here</a></p>
-      <p class="micro"><a href="terms.html" style="color: inherit;">Terms</a> &middot; <a href="privacy-policy.html" style="color: inherit;">Privacy Policy</a></p>
+      <footer class="site-footer">
+        <p>Girl Therapy is a dba of HJS Capital</p>
+        <p><a href="mailto:hi@girltherapy.co">hi@girltherapy.co</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="/terms">Terms of Service</a></p>
+      </footer>
     </div>
   </section>
 
-  <!-- Email capture modal -->
-  <div class="modal-overlay" id="email-modal" aria-hidden="true">
-    <div class="modal">
-      <button type="button" class="modal-close" id="email-modal-close" aria-label="Close">&times;</button>
-      <p class="modal-prompt">Praying you actually check your inbox</p>
-      <form id="waitlist-form-email" data-form-type="waitlist">
-        <div class="input-wrap">
-          <input type="email" id="email-input" name="email" required
-            placeholder="your email"
-            autocomplete="email">
-        </div>
-        <button type="submit">join the waitlist</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Thank you modal -->
-  <div class="modal-overlay" id="thanks-modal" aria-hidden="true">
-    <div class="modal modal--thanks">
-      <button type="button" class="modal-close" id="thanks-modal-close" aria-label="Close">&times;</button>
-      <p class="modal-prompt">Thank you :)</p>
-    </div>
-  </div>
-
   <script src="assets/js/main.js"></script>
   <script>
-    const smsRow      = document.getElementById('sms-consent-row');
-    const smsCheck    = document.getElementById('wl-consent');
-    const form        = document.getElementById('waitlist-form');
-
-    // Consent reminder on submit — if consent unchecked
-    // We suppress the native :required tooltip and use our own shake+highlight
-    form.addEventListener('submit', (e) => {
-      if (!smsCheck.checked) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        // Temporarily remove required so browser doesn't show its own tooltip
-        smsCheck.required = false;
-        smsRow.classList.remove('shake', 'highlight-required');
-        void smsRow.offsetWidth; // force reflow for animation restart
-        smsRow.classList.add('shake', 'highlight-required');
-        setTimeout(() => {
-          smsRow.classList.remove('highlight-required');
-          smsCheck.required = true; // restore required
-        }, 2800);
-        smsCheck.focus();
-      }
-    }, true);
-
-    // ===== Email modal (alternate path to join via email) =====
-    const emailToggleLink = document.getElementById('email-toggle-link');
-    const emailModal       = document.getElementById('email-modal');
-    const emailModalClose  = document.getElementById('email-modal-close');
-    const emailInput       = document.getElementById('email-input');
-    const emailForm        = document.getElementById('waitlist-form-email');
-
-    // ===== Thank-you modal (shown after either form succeeds) =====
-    const thanksModal      = document.getElementById('thanks-modal');
-    const thanksModalClose = document.getElementById('thanks-modal-close');
-
-    function openModal(modal) {
-      modal.classList.add('is-open');
-      modal.setAttribute('aria-hidden', 'false');
-    }
-    function closeModal(modal) {
-      modal.classList.remove('is-open');
-      modal.setAttribute('aria-hidden', 'true');
-    }
-
-    emailToggleLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal(emailModal);
-      emailInput.focus();
-    });
-
-    emailModalClose.addEventListener('click', () => closeModal(emailModal));
-    emailModal.addEventListener('click', (e) => {
-      if (e.target === emailModal) closeModal(emailModal);
-    });
-
-    thanksModalClose.addEventListener('click', () => closeModal(thanksModal));
-    thanksModal.addEventListener('click', (e) => {
-      if (e.target === thanksModal) closeModal(thanksModal);
-    });
-
-    // main.js dispatches 'waitlist:success' on a form after a successful submit
-    [form, emailForm].forEach((f) => {
-      f.addEventListener('waitlist:success', () => {
-        closeModal(emailModal);
-        emailForm.reset();
-        openModal(thanksModal);
-      });
-    });
-
     // ===== Keep the headline on one line at any viewport width =====
     function fitHeadline() {
       const h1 = document.querySelector('.hero h1');

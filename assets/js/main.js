@@ -53,44 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // Form submission → Google Sheet via Apps Script
   // ============================================
   // Deployed Apps Script web app (see scripts/apps-script-form-handler.gs).
+  // Used by therapist-interest forms (e.g. therapists.html's data-placeholder-form).
+  // The homepage no longer collects phone/email directly — see index.html's SMS CTA.
   const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxKM0AsGSR7_06VDc8bgAv-JQHj12_Rnc4Il4eiU5VD6IBuyiuHukO1OznD3Q7106jZrQ/exec';
 
-  // Forms can use either pattern:
-  //  - data-placeholder-form + .form__status (older multi-section pages)
-  //  - data-form-type + data-wl-success / data-wl-error (optional inline success/error blocks)
-  // On success every form also dispatches a 'waitlist:success' event for page-level UI (e.g. popups).
-  document.querySelectorAll('[data-placeholder-form], #waitlist-form, #waitlist-form-email').forEach((form) => {
+  // Forms use the data-placeholder-form + .form__status pattern.
+  // On success the form also dispatches a 'waitlist:success' event for page-level UI.
+  document.querySelectorAll('[data-placeholder-form]').forEach((form) => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const formType = form.dataset.formType || 'waitlist';
       const submitBtn = form.querySelector('button[type="submit"]');
 
-      // Pattern A: status line
       const status = form.querySelector('.form__status');
       const successMessage = form.dataset.successMessage || "Thanks! We'll be in touch soon.";
-
-      // Pattern B: success/error blocks (coming-soon hero uses a popup instead)
-      const successBlock = form.querySelector('[data-wl-success]');
-      const errorBlock = form.querySelector('[data-wl-error]');
 
       const showSuccess = () => {
         if (status) {
           status.textContent = successMessage;
           status.classList.add('is-visible');
         }
-        if (successBlock) successBlock.classList.add('is-visible');
-        if (errorBlock) errorBlock.classList.remove('is-visible');
       };
 
       const showError = (message) => {
         if (status) {
           status.textContent = message || "Something went wrong — please try again or email us directly.";
           status.classList.add('is-visible');
-        }
-        if (errorBlock) {
-          if (message) errorBlock.textContent = message;
-          errorBlock.classList.add('is-visible');
         }
       };
 
