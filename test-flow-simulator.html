@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Girl Therapy — Flow Test Lab</title>
+<title>Girl Therapy: Flow Test Lab</title>
 <meta name="description" content="Internal development tool for testing Girl Therapy flows.">
-<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23FF66C4'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%23FFECAD' font-family='Arial, sans-serif' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,7 +268,7 @@
 <body>
 
   <div class="page-header">
-    <h1>Girl Therapy — Flow Test Lab 💛</h1>
+    <h1>Girl Therapy: Flow Test Lab 💛</h1>
     <p>Sends real messages to the live deployed SMS + secure chat endpoints with a disposable test phone number, so you can try your own wording and see the genuine AI / state-machine response.</p>
   </div>
 
@@ -278,7 +277,7 @@
     <button id="newSessionBtn">↻ new test session</button>
   </div>
 
-  <div class="live-warning">⚠️ this hits the real deployed Apps Script endpoints and writes a real row to the Google Sheet (SMS Onboarding + Secure Intake tabs) under this fake number. fine for testing — delete the row when you're done if you want to keep the Sheet clean.</div>
+  <div class="live-warning">⚠️ this hits the real deployed Apps Script endpoints and writes a real row to the Google Sheet (SMS Onboarding + Secure Intake tabs) under this fake number. fine for testing, delete the row when you're done if you want to keep the Sheet clean.</div>
 
   <div class="phone-col">
     <div class="phone">
@@ -515,7 +514,7 @@ async function sendLiveSms(text) {
     const messages = parseTwimlMessages(xmlText);
 
     if (!messages.length) {
-      addLiveSmsError("didn't get a recognizable TwiML reply back — check the Apps Script Executions log.");
+      addLiveSmsError("didn't get a recognizable TwiML reply back. check the Apps Script Executions log.");
       return;
     }
 
@@ -538,7 +537,7 @@ async function sendLiveSms(text) {
     }
   } catch (err) {
     dots.remove();
-    addLiveSmsError('fetch failed: ' + err.message + ' — check your connection, or that the SMS Apps Script is deployed and the URL in this file is current.');
+    addLiveSmsError('fetch failed: ' + err.message + ', check your connection, or that the SMS Apps Script is deployed and the URL in this file is current.');
   } finally {
     if (liveSession.phase === 'sms') {
       smsInput.disabled = false;
@@ -589,7 +588,7 @@ async function sendLiveChat(text) {
     t.remove();
 
     if (data.error === 'invalid_token') {
-      addLiveChatError("invalid_token — the token this session has isn't recognized. start a new test session.");
+      addLiveChatError("invalid_token: the token this session has isn't recognized. start a new test session.");
       return;
     }
     if (data.error) {
@@ -612,7 +611,7 @@ async function sendLiveChat(text) {
     }
   } catch (err) {
     t.remove();
-    addLiveChatError('fetch failed: ' + err.message + ' — check your connection, or that the Secure Chat Apps Script is deployed and the URL in this file is current.');
+    addLiveChatError('fetch failed: ' + err.message + ', check your connection, or that the Secure Chat Apps Script is deployed and the URL in this file is current.');
   } finally {
     if (liveSession.phase === 'chat' && chatInput.placeholder !== "you're all set!") {
       chatInput.disabled = false;
